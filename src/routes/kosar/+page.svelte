@@ -118,7 +118,9 @@
          {#each Object.keys($cart) as termek, i (i)}
          <div class=" bg-gray-200 dark:bg-slate-800 rounded-xl drop-shadow-md text-center mb-4 p-2">
             <img class=" m-auto mb-6" src="favicon.png" alt="">
-            <h1 class=" text-2xl text-center">{termek}</h1>
+            <a href="/{termek}">
+               <h1 class=" text-2xl text-center">{termek}</h1>
+            </a>
             <div class="inline-flex bg-gray-300 dark:bg-slate-700 p-1 m-1 rounded-3xl">
                <!-- minus, remove button -->
                <div class="mx-2 rounded-full">
