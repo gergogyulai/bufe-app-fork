@@ -5,8 +5,10 @@
    import { deserialize } from '$app/forms';
    import { cart, total } from "$lib/stores/Cart.js";
    import Topbar from '$lib/components/Topbar.svelte';
+   import { space } from "svelte/internal";
 
    export let data;
+   export let open = false;
 
    if (localStorage.getItem('CartContent') != null) {
       $cart = JSON.parse(localStorage.getItem('CartContent'));
@@ -82,162 +84,93 @@
 			recalculate();
 		}
    }
-
 </script>
 
-<main in:fade={{duration: 180}}>
+<main class="h-screen w-screen overflow-x-hidden overflow-auto text-black bg-white dark:text-white dark:bg-slate-900 pb-36" in:fade={{duration: 180}}>
 
    <Topbar
    target={'Vissza'}
-   targeturl={$page.url.searchParams.get('referrer')}
+   targeturl={'/'}
    text={'Kosár'}
    background={'none'}
    hideProfile={0}
    flyin={0}
    ></Topbar>
 
-   <div class="urites">
-      <button on:click={() => {urites(); goto('/')}}>Űrités</button>
+   <!-- $page.url.searchParams.get('referrer') -->
+   {#if open}
+      <div></div>
+   {/if}
+   <div class="px-8">
+         {#if Object.keys($cart).length != 0}
+            <h2 class="text-center text-3xl m-5">Kosarad tartalma</h2>
+         {/if}
+         {#if Object.keys($cart).length < 1}
+         <div class="flex justify-center text-center items-center h-96">
+            <div in:fade="{{duration: 300}}">            
+               <h2 class="text-2xl m-2">Kosarad még üres :(</h2>
+               <h2 class="text-lg mb-4">Nézd meg a termékeket és rendelj még ma!</h2>
+               <a class=" bg-cyan-500 dark:bg-slate-800 font-bold text-white text-center p-3 w-40 rounded-xl" href="/list">Termékek megtekintése</a>
+            </div>
+         </div>
+         {/if}
+
+         {#each Object.keys($cart) as termek, i (i)}
+         <div class=" bg-gray-200 dark:bg-slate-800 rounded-xl drop-shadow-md text-center mb-4 p-2">
+            <img class=" m-auto mb-6" src="favicon.png" alt="">
+            <h1 class=" text-2xl text-center">{termek}</h1>
+            <div class="inline-flex bg-gray-300 dark:bg-slate-700 p-1 m-1 rounded-3xl">
+               <!-- minus, remove button -->
+               <div class="mx-2 rounded-full">
+                  {#if $cart[termek].darab > 1}
+                     <button class=" p-1 rounded-full dark:text-white text-cyan-500" on:click="{() => {subtractAmount(termek)}}"><span class="fa-solid fa-minus" in:fade="{{duration: 200}}"></span></button>
+                  {:else}
+                     <button class=" p-1 rounded-full dark:text-white text-cyan-500" on:click="{() => {subtractAmount(termek)}}"><span class="fa-solid fa-x text-red-500 font-bold" in:fade="{{duration: 200}}"></span></button>
+                  {/if}
+               </div>
+               {#key $cart[termek].ar}
+                  <div in:fade="{{duration: 50}}" class="mx-1 text-center p-1 rounded-full">{$cart[termek].darab}</div>
+               {/key}
+               <!-- plus button -->
+               <div class="mx-2 rounded-full">
+                  <button on:click="{() => {addAmount(termek)}}" class=" p-1 rounded-full dark:text-white text-cyan-500"><i class="fa-solid fa-plus"></i></button>
+               </div>
+            </div>
+            <div class="text-center m-2">
+               <h2>Kosárban:</h2>
+               {#key $cart[termek].ar}
+                  <div in:fade="{{duration: 50}}" class="text-center">{$cart[termek].darab} db</div>
+               {/key}
+               {#key termek.ar}
+                  <h2 class="text-center text-lg font-bold" in:fade="{{duration: 200}}">{$cart[termek].ar} Ft</h2>
+               {/key}
+            </div>
+         </div>
+         {/each}
+
+         {#if Object.keys($cart).length != 0}
+            <div class=" flex w-full justify-center">
+               <div class="urites">
+                  <button class="bg-red-500 font-bold text-white text-center p-2 w-40 m-2 rounded-xl" on:click={() => {urites(); }}>Kosár üritése</button>
+               </div>
+            </div>
+         {/if}
+
+         {#if Object.keys($cart).length != 0}
+         <div class="fixed bottom-0 left-0 h-32 w-full p-2 bg-slate-100 dark:bg-slate-800">
+            {#key $total}
+            <div class="flex flex-col justify-center">
+               <span in:fade="{{duration: 50}}" class="text-center dark:text-white text-black text-lg ">{$total.darab} db termék</span>
+               <span in:fade="{{duration: 50}}" class=" text-center dark:text-white text-black text-xl font-bold">Összesen: {$total.ar} Ft</span>
+            </div>
+            {/key}
+            <div class="flex w-full justify-center">
+               <form class="flex w-full justify-center mt-2" method="POST" on:submit|preventDefault={handleSubmit}>
+                  <input hidden type="text" name="rendeles" value="{JSON.stringify($cart)}">
+                  <button class=" bg-cyan-500 text-white dark:bg-slate-600 p-2 rounded-xl w-10/12">Vásárlás!</button>
+               </form>
+            </div>
+         </div>
+         {/if}
    </div>
-
-	{#key $total}
-   <h1 in:fade="{{duration: 200}}" style="color: white; margin-bottom: 5%;">{$total.darab} db termék, összesen: {$total.ar} Ft</h1>
-   {/key}
-   
-	{#each Object.keys($cart) as termek, i (i)}
-		{#key termek.ar}
-			<h2 class="title">{termek}: <span in:fade="{{duration: 200}}">{$cart[termek].ar}</span> Ft</h2>
-		{/key}
-
-		<div class="grid-container">
-			<div class="grid-cell">
-				<img src="favicon.png" alt="">
-			</div>
-			<div class="grid-cell">
-				<div class="picker-container">
-					<div class="inner-grid">
-						<div class="button-cell">
-							{#if $cart[termek].darab > 1}
-								<button on:click="{() => {subtractAmount(termek)}}"><span in:fade="{{duration: 200}}">➖</span></button>
-							{:else} 
-								<button on:click="{() => {subtractAmount(termek)}}"><span in:fade="{{duration: 200}}">❌</span></button>
-							{/if}
-						</div>
-							{#key $cart[termek].ar}<div in:fade="{{duration: 200}}" class="amount-cell">{$cart[termek].darab}</div>{/key}
-						<div class="button-cell">
-							<button on:click="{() => {addAmount(termek)}}">➕</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	{/each}
-
-	{#if Object.keys($cart).length != 0}
-		<form method="POST" on:submit|preventDefault={handleSubmit}>
-			<input hidden type="text" name="rendeles" value="{JSON.stringify($cart)}">
-			<button class="bottom-button">Vásárlás!</button>
-		</form>
-	{/if}
-
-
 </main>
-
-<style lang="scss">
-
-   main {
-      width: 100vw;
-      height: 100vh;
-
-      h1 {
-         text-align: center;
-         margin-top: 5%;
-      }
-
-		.title {
-			color: white;
-			text-align: center;
-		}
-
-		.grid-container {
-			display: grid;
-			grid-template-columns: 1fr 2fr;
-			background-color: var(--main-color);
-			border-radius: 1em;
-			margin: 0 3%;
-			margin-bottom: 5%;
-			margin-top: 1%;
-
-			&:last-of-type {
-				margin-bottom: 30%;
-			}
-
-			.grid-cell {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-
-				img {
-					height: 90px;
-				}
-			}
-		}
-
-      .urites {
-         width: 100vw;
-
-         button {
-            display: block;
-            border-radius: 50em;
-            padding: 2em;
-            color: white;
-            background-color: #222222;
-            margin: 0 auto;
-            font-weight: bolder;
-            margin-top: 5%;
-         }
-      }
-
-      .bottom-button {
-         position: fixed;
-         bottom: 0;
-         left: 0;
-         height: 3.5em;
-         background-color: var(--accent-color);
-         border-top-left-radius: 2.8em;
-         border-top-right-radius: 2.8em;
-         width: calc(98% - 2%); // * NAAAAGYON HACKY, de nem megy mashogy. Utálom a css-t
-         margin-left: 2%;
-         padding: .5ch 0;
-         border: none;
-      }
-
-		.picker-container {
-			width: 100%;
-			display: grid;
-			justify-items: center;
-
-			.inner-grid {
-				width: 85%;
-				display: grid;
-				grid-template-columns: auto 10% auto;
-				align-items: center;
-				justify-items: center;
-				background-color: rgb(20, 20, 20);
-				color: white;
-				border-radius: 2em;
-
-				button {
-					border: 0;
-					margin: 20% 0;
-					padding: 1em;
-					border-radius: 2em;
-				}
-
-				.amount-cell {
-					font-size: xx-large;
-				}
-			}
-		}
-   }
-</style>
