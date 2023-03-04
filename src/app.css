@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.active-icon-list{
+    @apply bg-indigo-600 py-4 px-5 rounded-full focus:bg-indigo-500 ease-in-out
+}

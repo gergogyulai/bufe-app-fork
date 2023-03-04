@@ -9,7 +9,8 @@
 
    export let data;
 
-	let swiper;
+   const darab = data.termekek.darab
+   let swiper;
    let cartshow = 0;
 
    if (browser) {
@@ -70,10 +71,9 @@
       hideProfile={0}
    ></Topbar>
 
-	<div class="search-container">
-		<div class="search">
-			<input type="text" bind:value={searchWord} on:input={search}>
-			<button on:click={() => {searchWord = ''; search()}}>❌</button>
+	<div class="flex justify-center mt-3">
+		<div class="flex items-center m-1">
+			<input placeholder="Kezdj el gépelni" class=" bg-gray-300 border-0 w-full rounded-lg p-1 px-2 outline" type="text" bind:value={searchWord} on:input={search}>
 		</div>
 	</div>
 
@@ -91,7 +91,7 @@
 				<div class='grid-container'>
 					{#each data.termekek as termek}
 						{#if termek.kategoria == 'Étel'}
-							<div class="inner-grid" class:elfogyott={termek.darab == 0}>
+							<div class="inner-grid" class:opacity-40={termek.darab == 0}>
 								<a data-sveltekit-noscroll href="{termek.termek}?referrer=/list" class='grid-cell'><img src='favicon.png' alt=''></a>
 								<a data-sveltekit-noscroll href="{termek.termek}?referrer=/list" class='grid-cell'>{termek.termek}</a>
 								<a data-sveltekit-noscroll href="{termek.termek}?referrer=/list" class='grid-cell'>{termek.ar} Ft</a>
@@ -107,7 +107,7 @@
 				<div class='grid-container'>
 					{#each data.termekek as termek}
 						{#if termek.kategoria == 'Ital'}
-							<div class="inner-grid" class:elfogyott={termek.darab == 0}>
+							<div class="inner-grid" class:opacity-50={termek.darab == 0}>
 								<a data-sveltekit-noscroll href="{termek.termek}?referrer=/list" class='grid-cell'><img src='favicon.png' alt=''></a>
 								<a data-sveltekit-noscroll href="{termek.termek}?referrer=/list" class='grid-cell'>{termek.termek}</a>
 								<a data-sveltekit-noscroll href="{termek.termek}?referrer=/list" class='grid-cell'>{termek.ar} Ft</a>
@@ -123,7 +123,7 @@
 				<div class='grid-container'>
 					{#each data.termekek as termek}
 						{#if termek.kategoria == 'Nasi'}
-							<div class="inner-grid" class:elfogyott={termek.darab == 0}>
+							<div class="inner-grid" class:opacity-50={termek.darab == 0}>
 								<a data-sveltekit-noscroll href="{termek.termek}?referrer=/list" class='grid-cell'><img src='favicon.png' alt=''></a>
 								<a data-sveltekit-noscroll href="{termek.termek}?referrer=/list" class='grid-cell'>{termek.termek}</a>
 								<a data-sveltekit-noscroll href="{termek.termek}?referrer=/list" class='grid-cell'>{termek.ar} Ft</a>
@@ -283,40 +283,5 @@ main {
             }
          }
       }
-
-		.elfogyott {
-			opacity: 35%;
-		}
-
-		.search-container {
-			display: flex;
-			justify-content: center;
-			
-			.search {
-				display: flex;
-				align-items: center;
-				margin: 1em;
-
-				input {
-					background-color: black;
-					border: 0;
-					padding: .4em;
-					outline: 1px solid rgba(255, 255, 255, 0.863);
-					width: 100%;
-					border-radius: 1em;
-					color: white;
-				}
-
-				button {
-					margin-left: 1em;
-					border: 0;
-					outline: 1px solid rgba(255, 255, 255, 0.863);
-					padding: .5em;
-					border-radius: 1em;
-					background-color: var(--main-color);
-				}
-			}
-		}
-   }
-
+	}
  </style>

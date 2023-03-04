@@ -3,6 +3,8 @@
    import { page } from '$app/stores';
 	import { onMount } from 'svelte';
   	import { pwaInfo } from 'virtual:pwa-info';
+   
+   import "../app.css";
 
 	const noKeyURLs = ['/admin','/rendelesek']
 
@@ -38,6 +40,8 @@
 {/if}
 
 <svelte:head>
+   <!-- <link rel="stylesheet" href="https://cdn.staticaly.com/gh/hung1001/font-awesome-pro-v6/44659d9/css/all.min.css" type="text/css" /> -->
+   <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />
     {@html webManifest}
 </svelte:head>
 
@@ -48,8 +52,6 @@
       list-style: none;
       text-decoration: none;
       -webkit-tap-highlight-color: transparent;
-      font-family:  Noto Serif Telugu;
-      font-size: 1.78ch;
       --main-color: #252525;
       --accent-color: #cf6100;
    }
@@ -63,9 +65,4 @@
          display: none;
       }
 	}
-
-   @font-face {
-      font-family: Noto Serif Telugu;
-      src: url(/NotoSerifTelugu-VariableFont_wght.ttf);
-   }
 </style>

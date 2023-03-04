@@ -1,265 +1,210 @@
 <script>
-   import { page } from "$app/stores";
-   import { goto } from "$app/navigation";
-   import { fade } from "svelte/transition";
-   import { cart, total } from "$lib/stores/Cart.js";
-   import Topbar from '$lib/components/Topbar.svelte';
-	import BottomButton from '$lib/components/BottomButton.svelte';
+	import { fly } from 'svelte/transition';
+	import { page } from "$app/stores";
+	import { goto } from "$app/navigation";
+	import { fade } from "svelte/transition";
+	import { cart, total } from "$lib/stores/Cart.js";
+	import Topbar from '$lib/components/Topbar.svelte';
+	// import BottomButton from '$lib/components/BottomButton.svelte';
+ 
+	export let data;
 
-   export let data;
-
-   const termek = data.termekek.termek;
-   const darab = data.termekek.darab
-   const description = data.termekek.leiras
-
-   let tempcart = {[termek] : { 'ar': 0, 'darab': 0, 'feltet': [] }};
-   $: amount = 1;
-   $: price = data.termekek.ar * amount;
-
-   if (localStorage.getItem('CartContent') != null) {
-      $cart = JSON.parse(localStorage.getItem('CartContent'));
-      tempcart = $cart;
-      if (tempcart[termek] == undefined) {
-         tempcart[termek] = { 'ar': 0, 'darab': 0, 'feltet': [] }
-      }
-   }
-
-   function addItem() {
-      if (amount < darab - tempcart[termek].darab) {
-         amount++
-      }
-   };
-   
-   function subtractItem() {
-      if (amount > 1) {
-         amount--
-      }
-   };
-
-   function buy() {
-      if (tempcart[termek].darab < darab) {
-			$cart[termek] = {'ar': tempcart[termek].ar + price, 'darab': tempcart[termek].darab + amount, 'feltet': tempcart[termek].feltet}
-
-			$total = { 'ar': 0, 'darab': 0, 'feltet': [] }
-			Object.keys($cart).forEach(termek => {
-				$total.ar += $cart[termek].ar
-				$total.darab += $cart[termek].darab
-			});
-
-         localStorage.setItem('CartContent',JSON.stringify($cart));
-         localStorage.setItem('Total',JSON.stringify($total));
-
-         goto("/list?Category=".concat($page.url.searchParams.get('Category')))
-      } else {
-         alert(`Túl sok ${termek} van már a kosárban!`)
-      }
-   };
-
-	function feltetChange(feltet,feltetAr,feltetDarab) {
-		if (tempcart[termek].feltet.includes(feltet)) {
-			tempcart[termek].feltet = tempcart[termek].feltet.filter(item => item != feltet)
-			price -= Number(feltetAr)
-		} else {
-			tempcart[termek].feltet = [ ...tempcart[termek].feltet, feltet] 
-			price += Number(feltetAr)
-		}
+	const termek = data.termekek.termek;
+	const darab = data.termekek.darab
+	const description = data.termekek.leiras
+ 
+	let tempcart = {[termek] : { 'ar': 0, 'darab': 0, 'feltet': [] }};
+	$: amount = 1;
+	$: price = data.termekek.ar * amount;
+ 
+	if (localStorage.getItem('CartContent') != null) {
+	   $cart = JSON.parse(localStorage.getItem('CartContent'));
+	   tempcart = $cart;
+	   if (tempcart[termek] == undefined) {
+		  tempcart[termek] = { 'ar': 0, 'darab': 0, 'feltet': [] }
+	   }
 	}
-
+ 
+	function addItem() {
+	   if (amount < darab - tempcart[termek].darab) {
+		  amount++
+	   }
+	};
+	
+	function subtractItem() {
+	   if (amount > 1) {
+		  amount--
+	   }
+	};
+ 
+	function buy() {
+	   if (tempcart[termek].darab < darab) {
+			 $cart[termek] = {'ar': tempcart[termek].ar + price, 'darab': tempcart[termek].darab + amount, 'feltet': tempcart[termek].feltet}
+ 
+			 $total = { 'ar': 0, 'darab': 0, 'feltet': [] }
+			 Object.keys($cart).forEach(termek => {
+				 $total.ar += $cart[termek].ar
+				 $total.darab += $cart[termek].darab
+			 });
+ 
+		  localStorage.setItem('CartContent',JSON.stringify($cart));
+		  localStorage.setItem('Total',JSON.stringify($total));
+ 
+		  goto("/list?Category=".concat($page.url.searchParams.get('Category')))
+	   } else {
+		  alert(`Túl sok ${termek} van már a kosárban!`)
+	   }
+	};
+	
+	function feltetChange(feltet,feltetAr,feltetDarab) {
+		 if (tempcart[termek].feltet.includes(feltet)) {
+			 tempcart[termek].feltet = tempcart[termek].feltet.filter(item => item != feltet)
+			 price -= Number(feltetAr)
+		 } else {
+			 tempcart[termek].feltet = [ ...tempcart[termek].feltet, feltet] 
+			 price += Number(feltetAr)
+		 }
+	 }
+	 
 </script>
+ 
+<main class=" h-screen w-screen overflow-x-hidden overflow-auto bg-white dark:text-white dark:bg-slate-900 pb-32" in:fade={{duration: 180}}>
+	<Topbar 
+		target={'Vissza'} 
+		targeturl={$page.url.searchParams.get('referrer')} 
+		text={''} background={'none'} 
+		hideProfile={0} 
+		flyin={0}
+	></Topbar>
+	<div>
+		<div class="p-8">
+			<div class=" bg-gray-200 dark:bg-slate-800 rounded-xl text-center mb-4 p-2">
+				<img class=" m-auto mb-6" src="favicon.png" alt="">
+				<h1 class=" text-2xl text-center">{termek}</h1>
 
-<main in:fade={{duration: 180}}>
+				<!-- {#if data.termekek.badges}
+					<div class="m-1 text-xs font-medium">
+						{#each Object.keys(data.termekek.badges) as badge}
+							<span class="
+							bg-{data.termekek.badges[badge].color}-200 
+							text-{data.termekek.badges[badge].color}-800 
+							dark:bg-{data.termekek.badges[badge].color}-900 
+							dark:text-{data.termekek.badges[badge].color}-300 
+							mr-2 px-2.5 py-0.5 rounded-full">{badge}</span>
+						{/each}
+					</div>
+				{/if} -->
 
-   <Topbar
-      target={'Vissza'}
-      targeturl={$page.url.searchParams.get('referrer')}
-      text={''}
-      background={'none'}
-      hideProfile={0}
-      flyin={0}
-   ></Topbar>
+				{#if darab !=0}
+					<h2>Elérhető: {darab} db</h2>
+				{:else}
+					<h2 class=" text-red-500">Elérhető: {darab} db</h2>
+				{/if}
+				
+				<span>{description}</span>
+			</div>
 
+			{#if data.termekek.feltetek}
+			<div class="feltetek bg-gray-200 dark:bg-slate-800 rounded-xl p-4">
+				<p id="feltetek">Feltétek:</p>
+				<div class="">
+					{#each Object.keys(data.termekek.feltetek) as feltet}
+						<!-- <div class="flex items-center m-3">
+							<input id="{feltet}" on:change={() => {feltetChange(feltet,data.termekek.feltetek[feltet].ar,data.termekek.feltetek[feltet].darab)}} type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600">
+							<label for="{feltet}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{feltet} +{data.termekek.feltetek[feltet].ar} Ft</label>
+						</div> -->
+						<label class="relative inline-flex items-center cursor-pointer m-2">
+							<input on:change={() => {feltetChange(feltet,data.termekek.feltetek[feltet].ar,data.termekek.feltetek[feltet].darab)}} type="checkbox" value="" class="sr-only peer">
+							<div class="
+							w-11 h-6 bg-gray-300 focus:outline-none peer-focus:outline-none rounded-full peer
+							  dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white 
+							  after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 
+							  after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600
+							  peer-checked:bg-cyan-600 drop-shadow-xl">
+							</div>
+							<span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{feltet} +{data.termekek.feltetek[feltet].ar} Ft</span>
+						</label>
+					{/each}
+				</div>
+			</div>
+			{/if}	
 
-	<div class="container">
-		<div class="termek-container">
-			<h1>{termek}</h1>
-			{#key price}<h2 in:fade="{{duration: 200}}">{price} Ft</h2>{/key}
-			<img src="favicon.png" alt="" />
-			
 			{#if darab != 0}
-				<div class="grid-container">
-					<div class="inner-grid">
-						<div class="button-cell">
-							<button on:click="{subtractItem}">➖</button>
-						</div>
-						{#key amount}<div in:fade="{{duration: 200}}" class="amount-cell">{amount}</div>{/key}
-						<div class="button-cell">
-							<button on:click="{addItem}">➕</button>
+				<div in:fly={{y: 100}} class="fixed -bottom-0.5 left-0 h-32 w-full p-2 bg-slate-100 dark:bg-slate-800">
+					<div class="flex items-center justify-evenly drop-shadow-2xl">
+						{#key price}
+							<h2 class="text-xl mb-2 p-2 rounded-full mt-2" in:fade="{{duration: 50}}">Ár: {price} Ft</h2>
+						{/key}
+						<div class="inline-flex bg-gray-300 dark:bg-slate-700 p-1 rounded-3xl">
+							<!-- minus button -->
+							<div class="mx-2 rounded-full">
+								<button on:click="{subtractItem}" class=" p-1 rounded-full dark:text-white text-cyan-500"><i class="fa-solid fa-minus"></i></button>
+							</div>
+							{#key amount}
+								<div in:fade="{{duration: 50}}" class="mx-1 text-center p-1 rounded-full">{amount}</div>
+							{/key}
+							<!-- plus button -->
+							<div class="mx-2 rounded-full">
+								<button on:click="{addItem}" class=" p-1 rounded-full dark:text-white text-cyan-500"><i class="fa-solid fa-plus"></i></button>
+							</div>
 						</div>
 					</div>
+					<div class=" flex w-full mt-2 justify-center">
+						<button on:click={buy} class=" bg-cyan-500 hover:bg-cyan-600 dark:hover:bg-slate-500 text-white dark:bg-slate-600 p-2 w-9/12 rounded-xl text-center mr-2">Kosárhoz adás</button>
+						<button on:click={buy} class=" bg-cyan-500 hover:bg-cyan-600 dark:hover:bg-slate-500 text-white dark:bg-slate-600 p-2 w-12 rounded-xl text-center"><i class="fa-solid fa-star"></i></button>
+					</div>
 				</div>
-
-				<h4>{description}</h4>
-
-				<BottomButton
-					text={'kosárba!'}
-					action={buy}
-				></BottomButton>
-			
 			{:else}
-				<div class="grid-container">
-					<div class="inner-grid">
-						<div class="button-cell">
+				<div in:fly={{y: 100}} class="fixed bottom-0 left-0 h-32 w-full p-2 bg-slate-100 dark:bg-slate-800 opacity-90">
+					<div class="flex items-center justify-evenly drop-shadow-2xl opacity-50">
+						{#key price}
+							<h2 class="text-xl mb-2 p-2 rounded-full mt-2" in:fade="{{duration: 50}}">Ár: {price} Ft</h2>
+						{/key}
+						<div class="inline-flex bg-gray-300 dark:bg-slate-700 p-1 rounded-3xl">
+							<!-- plus button -->
+							<div class="mx-2 rounded-full">
+								<button on:click="{subtractItem}" class=" p-1 rounded-full dark:text-white text-cyan-500" disabled><i class="fa-solid fa-minus"></i></button>
+							</div>
+							{#key amount}
+								<div in:fade="{{duration: 50}}" class="mx-1 text-center p-1 rounded-full">{amount}</div>
+							{/key}
+							<!-- minus button -->
+							<div class="mx-2 rounded-full">
+								<button on:click="{addItem}" class=" p-1 rounded-full dark:text-white text-cyan-500" disabled><i class="fa-solid fa-plus"></i></button>
+							</div>
 						</div>
-						<div class="amount-cell elfogyott">Elfogyott</div>
-						<div class="button-cell">
-						</div>
+					</div>
+					<div class=" flex w-full mt-2 justify-center">
+						<button on:click={buy} class=" bg-cyan-600 text-white dark:bg-slate-600 p-2 w-11/12 rounded-2xl text-center disabled:opacity-50" disabled>Kosárhoz adás</button>
 					</div>
 				</div>
 			{/if}
 		</div>
-		
-	{#if data.termekek.feltetek}
-		<div class="feltetek">
-			<p id="feltetek">Feltétek:</p>
-
-			<div class="feltet-container">
-				{#each Object.keys(data.termekek.feltetek) as feltet}
-					<div class="feltet-cell feltet">{feltet}</div>
-					<div class="feltet-cell check"><input on:change={() => {feltetChange(feltet,data.termekek.feltetek[feltet].ar,data.termekek.feltetek[feltet].darab)}} type="checkbox" name="{feltet}"></div>
-					<div class="feltet-cell ar">{data.termekek.feltetek[feltet].ar} Ft</div>
-				{/each}
-			</div>
-		</div>
-	{/if}
-		
 	</div>
-
 </main>
 
-<style lang="scss">
 
-.feltetek {
-	padding-bottom: .5rem;
 
-	p {
-		color: white;
-		text-align: center;
-		margin-top: 1rem;
-		margin-bottom: .5rem;
+<!-- {
+	"Vegan": {
+	  "color": "green"
+	},
+	"Laktozmentes": {
+	  "color": "blue"
 	}
+
+	{
+  "Vegan": {
+    "color": "red"
+  },
+  "Vaj nélkül": {
+    "color": "red"
+  },
+  "Öntet": {
+    "darab": "red"
+  },
+  "Plusz mustár": {
+    "darab": "red"
+  }
 }
-
-.feltet-container {
-		display: grid;
-		grid-template-columns: 49% auto 49%;
-		margin: 0 5%;
-		color: white;
-		border-radius: 1em;
-		overflow: hidden;
-		text-align: center;
-		font-size: larger;
-
-		&:last-of-type {
-			margin-bottom: 6%;
-		}
-
-		.feltet-cell {
-			background-color: var(--main-color);
-			padding: .5em 0;
-		}
-
-		.feltet {
-			&:nth-of-type(even) {
-				background-color: #141414;
-			}
-		}
-
-		.check {
-			&:nth-of-type(odd) {
-				background-color: #141414;
-			}
-		}
-
-		.ar {
-			&:nth-of-type(even) {
-				background-color: #141414;
-			}
-		}
-
-	}
-
-   h1 {
-      text-align: center;
-      color: white;
-      padding: 1ch;
-      padding-bottom: 0;
-      font-size: xx-large;
-   }
-
-   h2 {
-      text-align: center;
-      color: white;
-      padding: .5ch;
-      font-size: x-large;
-   }
-
-   h4 {
-		padding: 1em 0;
-      color: white;
-      text-align: center;
-   }
-
-   img {
-      display: block;
-      margin: auto;
-      margin-top: 1ch;
-      width: 70%;
-   }
-
-	.container {
-		background-color: rgb(20, 20, 20);
-		margin: 0 5%;
-		border-radius: 2em;
-
-		.termek-container {
-			background-color: var(--main-color);
-			margin-top: 5%;
-			border-radius: 2em;
-
-			.grid-container {
-				width: 100%;
-				display: grid;
-				justify-items: center;
-				margin-top: 5%;
-
-				.inner-grid {
-					width: 85%;
-					display: grid;
-					grid-template-columns: auto 10% auto;
-					align-items: center;
-					justify-items: center;
-					background-color: rgb(20, 20, 20);
-					color: white;
-					border-radius: 2em;
-
-					button {
-						border: 0;
-						margin: 20% 0;
-						padding: 1.5rem;
-						border-radius: 1.5em;
-					}
-
-					.elfogyott {
-						margin: 1.5rem;
-					}
-
-					.amount-cell {
-						font-size: xx-large;
-					}
-				}
-			}
-		}
-	}
-
-
-</style>
+  } -->

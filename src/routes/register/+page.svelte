@@ -9,112 +9,27 @@
    let passwordConfirm;
 </script>
 
-<main in:fade={{duration: 180}}>
-   <div class="login">
-      <img src="favicon.png" alt="" />
-      <form method="post">
-         <label for="name-form">Teljes név:</label><br>
-         <input name='name' bind:value={name} id="name-form" type="name" /><br />
-         <label id="email-form-label" for="email-form">Kandós E-mail:</label><br />
-         <input name='email' bind:value={email} id="email-form" type="text" /> <p>@kkszki.hu</p>
-         <br />
-         <label for="password-form">Jelszó:</label><br>
-         <input name='password' bind:value={password} id="password-form" type="password" /> <br>
-         <label for="password-confirm-form">Jelszó újra:</label><br>
-         <input name='passwordConfirm' bind:value={passwordConfirm} id="password-confirm-form" type="password" />
-         
+<main class=" flex items-center h-screen w-screen dark:bg-slate-900 bg-white">
+   <div class="dark:text-white text-cyan-600 text-center">
+      <h1 class="m-2 text-4xl drop-shadow-lg">Kandó Büfé</h1>
+      <h1 class="m-4 text-2xl drop-shadow-xl">Regisztráció</h1>
+      <form class="drop-shadow-xl" method="post">
+         <input class="  dark:focus:bg-slate-700 focus:bg-gray-100 focus:outline-0 p-2 px-4 text-center my-2 dark:bg-slate-800 bg-white rounded-xl w-60" placeholder="Teljes név" name='name' bind:value={name} id="name-form" type="name" /><br />
+         <input class="  dark:focus:bg-slate-700 focus:bg-gray-100 focus:outline-0 p-2 px-4 text-center my-2 dark:bg-slate-800 bg-white rounded-xl w-60" placeholder="Kandós E-mail" name='email' bind:value={email} id="email-form" type="text" /><br />
+         <input class="  dark:focus:bg-slate-700 focus:bg-gray-100 focus:outline-0 p-2 px-4 text-center my-2 dark:bg-slate-800 bg-white rounded-xl w-60" placeholder="Jelszó" name='password' bind:value={password} id="password-form" type="password" /> <br>
+         <input class="  dark:focus:bg-slate-700 focus:bg-gray-100 focus:outline-0 p-2 px-4 text-center mt-2 dark:bg-slate-800 bg-white rounded-xl w-60" placeholder="Jelszó újra"  name='passwordConfirm' bind:value={passwordConfirm} id="password-confirm-form" type="password" />
          {#if name && email && password && passwordConfirm && password == passwordConfirm}
-            <button in:fade={{duration: 400}}>Regisztrálás</button>          
+         <br>
+            <button class="p-2 mt-6 w-30 rounded-xl dark:bg-slate-800 dark:text-white focus:bg-slate-700 bg-cyan-600 shadow-lg shadow-cyan-500/50 text-white" in:fade={{duration: 300}}>Regisztráció</button>
          {/if}
          <br>
          {#if form?.error}
-            <p id="error">{form?.error}</p>
+            <p class=" font-semibold my-3 text-red-500" id="error">{form?.error}</p>
          {/if}
       </form>
-
-		<div class="regin-button">
-			<h2>Van már fiókod?</h2> <a href="/login"><button>Belépés</button></a>
+      <div class="drop-shadow-2xl leading-tight mt-6 font-light w-screen">
+			<h2 class="opacity-75">Már van fiókod?</h2><br/>
+         <a class=" text-cyan-500 outline rounded-xl p-2 mt-10" href="/login">Belépés</a>
 		</div>
-
    </div>
-
 </main>
-
-<style lang="scss">
-
-	main {
-		width: 100vw;
-		height: 100vh;
-		display: flex;
-		align-items: center;
-	}
-
-   .regin-button {
-      width: 100vw;
-      text-align: center;
-      margin-top: 5vh;
-      color: white;
-
-      button {
-         background-color: rgb(20, 20, 20);
-         padding: 1ch;
-         border-radius: 4vw;
-         color: white;
-         margin-top: 1ch;
-      }
-   }
-
-   .login {
-      text-align: center;
-      color: white;
-
-      img {
-         display: block;
-         margin: 0 auto;
-         margin-bottom: 10%;
-      }
-   }
-
-   form {
-      input {
-         border: 0.2vw solid white;
-         border-radius: 4vw;
-         width: 50%;
-         color: white;
-         background-color: rgb(20, 20, 20);
-         padding-top: 1vh;
-         padding-bottom: 1vh;
-         padding-left: 3vw;
-         margin-top: 1vh;
-         margin-bottom: 3vw;
-      }
-
-      #email-form-label {
-         margin-right: 10ch;
-      }
-
-      #email-form {
-         width: calc(50% - 10ch);
-      }
-
-      p {
-         // transform: translateX(-10vw);
-         display: inline-block;
-      }
-
-      button {
-         border-radius: 4vw;
-         width: 80%;
-         padding: 3vw;
-         margin-top: 2vh;
-         background-color: rgb(20, 20, 20);
-         color: white;
-      }
-
-      #error {
-         margin-top: 1vh;
-         color: var(--accent-color);
-      }
-   }
-
-</style>
