@@ -7,7 +7,7 @@ export function GET() {
 	const zarasDifference = zaras - now;
 	const nyitasDifference = nyitas - now;
 	const dayOfTheWeek = now.getDay();
-	let message, zarva;
+	let message;
   
 	if (dayOfTheWeek === 0 || dayOfTheWeek === 6) {
 		bufeClosed.set(true);
@@ -34,7 +34,7 @@ export function GET() {
 		message = "error with time";
 	}
   
-	const body = JSON.stringify({ message, zarva });
+	const body = JSON.stringify({ message });
 	const headers = { "Content-Type": "application/json" };
 	const response = new Response(body, { headers });
 	
