@@ -24,11 +24,11 @@
 	function getMessageHandler(message) {
   		const handlers = {
 			"closed": () => showNotification('A büfé bezárt!', '#ef4444', '#ffffff'),
-    			"10minLeft": () => showNotification('A büfé 10 perc múlva bezár', '#dc2626', '#ffffff'),
-    			"20minLeft": () => showNotification('A büfé 20 perc múlva bezár', '#f87171', '#ffffff'),
-    			"30minLeft": () => showNotification('A büfé fél óra múlva bezár', '#ffffff', '#363636'),
-    			"60minLeft": () => showNotification('A büfé 1 óra múlva bezár', '#ffffff', '#363636'),
-    			"hetvege": () =>  showNotification('A jelenleg zárva van', '#ffffff', '#363636'),
+    		"10minLeft": () => showNotification('A büfé 10 perc múlva bezár', '#dc2626', '#ffffff'),
+    		"20minLeft": () => showNotification('A büfé 20 perc múlva bezár', '#f87171', '#ffffff'),
+    		"30minLeft": () => showNotification('A büfé fél óra múlva bezár', '#ffffff', '#363636'),
+    		"60minLeft": () => showNotification('A büfé 1 óra múlva bezár', '#ffffff', '#363636'),
+    		"hetvege": () =>  showNotification('A jelenleg zárva van', '#ffffff', '#363636'),
 			"nyitva": () => console.log("bufe nyitva")
   		};
   		const handler = handlers[message];
