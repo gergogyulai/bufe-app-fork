@@ -8,7 +8,6 @@
    import { space } from "svelte/internal";
 
    export let data;
-   export let open = false;
 
    if (localStorage.getItem('CartContent') != null) {
       $cart = JSON.parse(localStorage.getItem('CartContent'));
@@ -98,9 +97,7 @@
    ></Topbar>
 
    <!-- $page.url.searchParams.get('referrer') -->
-   {#if open}
-      <div></div>
-   {/if}
+
    <div class="px-8">
          {#if Object.keys($cart).length != 0}
             <h2 class="text-center text-3xl m-5">Kosarad tartalma</h2>
