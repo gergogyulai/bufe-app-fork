@@ -105,47 +105,49 @@
          {#if Object.keys($cart).length != 0}
             <h2 class="text-center text-3xl m-5">Kosarad tartalma</h2>
          {/if}
+         
          {#if Object.keys($cart).length < 1}
          <div class="flex justify-center text-center items-center h-96">
             <div in:fade="{{duration: 300}}">            
                <h2 class="text-2xl m-2">Kosarad még üres :(</h2>
                <h2 class="text-lg mb-4">Nézd meg a termékeket és rendelj még ma!</h2>
-               <a class=" bg-cyan-500 dark:bg-slate-800 font-bold text-white text-center p-3 w-40 rounded-xl" href="/list">Termékek megtekintése</a>
+               <a class=" bg-cyan-500 dark:bg-slate-800 font-bold text-gray-200 text-center p-3 w-40 rounded-xl" href="/list">Termékek megtekintése</a>
             </div>
          </div>
          {/if}
 
+
          {#each Object.keys($cart) as termek, i (i)}
-         <div class=" bg-gray-200 dark:bg-slate-800 rounded-xl drop-shadow-md text-center mb-4 p-2">
-            <img class=" m-auto mb-6" src="favicon.png" alt="">
-            <a href="/{termek}">
-               <h1 class=" text-2xl text-center">{termek}</h1>
-            </a>
-            <div class="inline-flex bg-gray-300 dark:bg-slate-700 p-1 m-1 rounded-3xl">
-               <!-- minus, remove button -->
-               <div class="mx-2 rounded-full">
-                  {#if $cart[termek].darab > 1}
-                     <button class=" p-1 rounded-full dark:text-white text-cyan-500" on:click="{() => {subtractAmount(termek)}}"><span class="fa-solid fa-minus" in:fade="{{duration: 200}}"></span></button>
-                  {:else}
-                     <button class=" p-1 rounded-full dark:text-white text-cyan-500" on:click="{() => {subtractAmount(termek)}}"><span class="fa-solid fa-x text-red-500 font-bold" in:fade="{{duration: 200}}"></span></button>
-                  {/if}
-               </div>
-               {#key $cart[termek].ar}
-                  <div in:fade="{{duration: 50}}" class="mx-1 text-center p-1 rounded-full">{$cart[termek].darab}</div>
-               {/key}
-               <!-- plus button -->
-               <div class="mx-2 rounded-full">
-                  <button on:click="{() => {addAmount(termek)}}" class=" p-1 rounded-full dark:text-white text-cyan-500"><i class="fa-solid fa-plus"></i></button>
-               </div>
+         <div class="flex flex-row items-start justify-start bg-gray-200 dark:bg-slate-800 rounded-xl drop-shadow-md text-center mb-4 outline outline-1 outline-slate-200 dark:outline-slate-700">
+            <div class="m-0.5">
+               <img class=" rounded-tl-xl rounded-bl-xl object-cover h-32" src="hamburger.jpg" alt="">
             </div>
-            <div class="text-center m-2">
-               <h2>Kosárban:</h2>
-               {#key $cart[termek].ar}
-                  <div in:fade="{{duration: 50}}" class="text-center">{$cart[termek].darab} db</div>
-               {/key}
-               {#key termek.ar}
-                  <h2 class="text-center text-lg font-bold" in:fade="{{duration: 200}}">{$cart[termek].ar} Ft</h2>
-               {/key}
+            <div class=" w-4/5 flex flex-col justify-center items-center p-2">
+               <a href="/{termek}">
+                  <h1 class=" text-lg text-center">{termek}</h1>
+               </a>
+
+               <div class="flex justify-center bg-gray-300 dark:bg-slate-700 p-1 m-1 rounded-3xl border border-slate-200 dark:border-slate-600">
+                  <div class="mx-2 rounded-full">
+                     {#if $cart[termek].darab > 1}
+                        <button class=" p-1 rounded-full dark:text-white text-cyan-500" on:click="{() => {subtractAmount(termek)}}"><span class="fa-solid fa-minus" in:fade="{{duration: 200}}"></span></button>
+                     {:else}
+                        <button class=" p-1 rounded-full dark:text-white text-cyan-500" on:click="{() => {subtractAmount(termek)}}"><span class="fa-solid fa-x text-red-500 font-bold" in:fade="{{duration: 200}}"></span></button>
+                     {/if}
+                  </div>
+                  {#key $cart[termek].ar}
+                     <div in:fade="{{duration: 50}}" class="mx-1 text-center p-1 rounded-full">{$cart[termek].darab}</div>
+                  {/key}
+                  <div class="mx-2 rounded-full">
+                     <button on:click="{() => {addAmount(termek)}}" class=" p-1 rounded-full dark:text-white text-cyan-500"><i class="fa-solid fa-plus"></i></button>
+                  </div>
+               </div>
+
+               <div class="text-center mt-2">
+                  {#key termek.ar}
+                     <h2 class="text-center text-lg font-bold" in:fade="{{duration: 200}}">{$cart[termek].ar} Ft</h2>
+                  {/key}
+               </div>
             </div>
          </div>
          {/each}
@@ -167,9 +169,8 @@
             </div>
             {/key}
             <div class="flex w-full justify-center">
-               <form class="flex w-full justify-center mt-2" method="POST" on:submit|preventDefault={handleSubmit}>
-                  <input hidden type="text" name="rendeles" value="{JSON.stringify($cart)}">
-                  <button class=" bg-cyan-500 text-white dark:bg-slate-600 p-2 rounded-xl w-10/12">Vásárlás!</button>
+               <form class="flex w-full justify-center mt-2" action="/megrendeles">
+                  <button class=" bg-cyan-500 text-white dark:bg-slate-600 p-2 rounded-xl w-10/12">Tovább</button>
                </form>
             </div>
          </div>
