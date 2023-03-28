@@ -1,5 +1,4 @@
 import { fail } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
 
 export const ssr = false;
 
@@ -29,7 +28,7 @@ export const actions = {
 				await locals.pb.collection('termekek').update(record.id, { 'darab': record.darab - darab } ); // darabszam kivonasa
 			else
 				return fail(409, { 'error': `Túl sok ${record.termek} a kosárban!`, 'sok': record.termek });
-			}
+		}
 
 		await locals.pb.collection('rendelesek').create({ 'rendelo': locals.pb.authStore.baseModel.id, 'termekek': rendeles, total, 'status': 'fuggoben', 'name': locals.pb.authStore.baseModel.name });
 	}

@@ -73,6 +73,7 @@
 		text={''} background={'none'} 
 		hideProfile={0} 
 		flyin={0}
+		kosar={true}
 	></Topbar>
 	<div>
 		<div class="p-8">
