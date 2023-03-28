@@ -2,8 +2,8 @@ import { bufeClosed } from "$lib/stores/Closed.js";
 
 export function GET() {
 	const now = new Date();
-	const zaras = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 20, 0);
-	const nyitas = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 0, 0);
+	const zaras = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 0, 0);
+	const nyitas = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0, 0);
 	const zarasDifference = zaras - now;
 	const nyitasDifference = nyitas - now;
 	const dayOfTheWeek = now.getDay();
@@ -32,7 +32,7 @@ export function GET() {
 	  	message = "nyitva";
 	} else {
 		message = "error with time";
-	}
+	};
   
 	const body = JSON.stringify({ message });
 	const headers = { "Content-Type": "application/json" };
