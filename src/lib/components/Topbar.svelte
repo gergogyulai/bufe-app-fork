@@ -7,6 +7,7 @@
    export let background;
    export let flyin;
    export let hideProfile;
+   export let kosar = false;
 </script>
 
 <div in:fly={flyin} class="w-full h-auto bg-gray-100 dark:bg-slate-800 p-1" style="background-color: {background};">
@@ -18,6 +19,9 @@
          <h1>{text}</h1>
       </div>
       <div class=" flex justify-end items-center pr-1">
+         {#if kosar}
+            <a href="/kosar"><div class=" flex justify-center items-center w-8 h-8 p-0.5 rounded-full hover:opacity-75 bg-slate-700 ring-1 ring-slate-700 mr-3"><i class="fa-regular fa-bag-shopping"></i></div></a>
+         {/if}
          <a data-sveltekit-noscroll class:hideProfile href="/profil"><img class="w-8 h-8 p-0.5 rounded-full ring-2 hover:opacity-75 ring-gray-300 dark:ring-gray-500" src="/api/avatar" alt="Avatar"></a>
       </div>
    </div>
