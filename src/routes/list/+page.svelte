@@ -73,7 +73,7 @@
         kosar={true}
    ></Topbar>
 
-    <div class="flex justify-center items-center my-5">
+    <div class="flex justify-center items-center my-5 drop-shadow-lg">
         <label class="group" for="searchBar">
             <div class="flex focus-within:ring-1 focus-within:ring-blue-600 rounded-lg">
                <div class=" flex items-center justify-center rounded-l-lg border-none bg-gray-200">
@@ -95,7 +95,7 @@
  	>
    
 		<SwiperSlide>
-		<div in:slide={{duration: 800}} class='px-8'>
+		<div in:slide={{duration: 800}} class='px-8 drop-shadow-md'>
             <div class='flex flex-col w-full items-center'>
 		    	{#each data.termekek as termek}
 		    	{#if termek.kategoria == 'Étel'}
@@ -124,7 +124,7 @@
 		</SwiperSlide>
 
 		<SwiperSlide>
-            <div in:slide={{duration: 800}} class='px-8'>
+            <div in:slide={{duration: 800}} class='px-8 drop-shadow-md'>
                 <div class='flex flex-col w-full items-center'>
                     {#each data.termekek as termek}
                     {#if termek.kategoria == 'Ital'}
@@ -153,7 +153,7 @@
 		</SwiperSlide>
 
 		<SwiperSlide>
-            <div in:slide={{duration: 800}} class='px-8'>
+            <div in:slide={{duration: 800}} class='px-8 drop-shadow-md'>
                 <div class='flex flex-col w-full items-center'>
                     {#each data.termekek as termek}
                     {#if termek.kategoria == 'Nasi'}
@@ -182,7 +182,7 @@
 		</SwiperSlide>
 
       <SwiperSlide>
-		<div in:slide={{duration: 800}} class='px-8'>
+		<div in:slide={{duration: 800}} class='px-8 drop-shadow-md'>
             <div class='flex flex-col w-full items-center'>
 		    	{#each data.termekek as termek}
 		    	{#if termek.kategoria == 'Egyéb'}
