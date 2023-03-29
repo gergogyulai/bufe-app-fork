@@ -1,24 +1,24 @@
 <script>
-   import { fly, slide } from 'svelte/transition';
+    import { fly, slide } from 'svelte/transition';
 	import { Swiper, SwiperSlide } from 'swiper/svelte';
 	import 'swiper/css';
-   import { browser } from '$app/environment';
-   import { cart, total } from '$lib/stores/Cart.js';
-   import { navigation } from '$lib/stores/Navigation.js';
-   import Topbar from '$lib/components/Topbar.svelte';
+    import { browser } from '$app/environment';
+    import { cart, total } from '$lib/stores/Cart.js';
+    import { navigation } from '$lib/stores/Navigation.js';
+    import Topbar from '$lib/components/Topbar.svelte';
 
-   export let data;
+    export let data;
 
-   let swiper;
-   let cartshow = 0;
+    let swiper;
+    let cartshow = 0;
 
-   if (browser) {
-      if (localStorage.getItem('CartContent') != null) {
-         cartshow = 1;
-         $cart = JSON.parse(localStorage.getItem('CartContent'));
+    if (browser) {
+        if (localStorage.getItem('CartContent') != null) {
+            cartshow = 1;
+            $cart = JSON.parse(localStorage.getItem('CartContent'));
 			$total = JSON.parse(localStorage.getItem('Total'));
-      };
-   };
+        };
+    };
 
 	function navigate(i) {
 		swiper.slideTo(i);
@@ -38,7 +38,7 @@
 				'Étel': 0,
 				'Ital': 0,
 				'Nasi': 0,
-            'Egyéb':0
+                'Egyéb':0
 			}
 
 			data.termekek.forEach(termek => {
@@ -54,34 +54,35 @@
 					break;
 				case kategoria.Nasi:
 					navigate(2)
-               break;
-            case kategoria.Egyéb:
+                    break;
+                case kategoria.Egyéb:
 					navigate(3)
-               break;
+                break;
 			}
 		}
 	}
 </script>
 <main class=" h-screen w-screen overflow-x-hidden overflow-y-scroll bg-slate-900 pb-20">
-
    <Topbar
-      target={'Menü'}
-      targeturl={'/'}
-      background={'none'}
-      text={'Termékek'}
-      flyin={{y: -200}}
-      hideProfile={0}
-      kosar={true}
+        target={'Menü'}
+        targeturl={'/'}
+        background={'none'}
+        text={'Termékek'}
+        flyin={{y: -200}}
+        hideProfile={0}
+        kosar={true}
    ></Topbar>
 
-      <div class="flex justify-center items-center my-5">
-         <label class="group" for="searchBar">
+    <div class="flex justify-center items-center my-5">
+        <label class="group" for="searchBar">
             <div class="flex focus-within:ring-1 focus-within:ring-blue-600 rounded-lg">
-               <div class=" flex items-center justify-center rounded-l-lg border-none bg-gray-300"><i class="group-focus-within:text-neutral-800 p-1 pl-2 text-neutral-500 fa-solid fa-magnifying-glass"></i></div>
+               <div class=" flex items-center justify-center rounded-l-lg border-none bg-gray-300">
+                    <i class="group-focus-within:text-neutral-800 p-1 pl-2 text-neutral-500 fa-solid fa-magnifying-glass"></i>
+                </div>
                <input placeholder="Keresés" id="searchBar" class="group-focus-within:placeholder-neutral-600 bg-gray-300 border-0 p-2 px-2 rounded-r-lg focus:outline-none w-20 group-focus-within:w-48 transition-[width] ease-in-out duration-150" type="text" bind:value={searchWord} on:input={search}>
             </div>
-         </label>
-      </div>
+        </label>
+    </div>
 
 	<Swiper
 	initialSlide={$navigation}
@@ -94,138 +95,128 @@
  	>
    
 		<SwiperSlide>
-			<div in:slide={{duration: 800}} class='px-8'>
+		<div in:slide={{duration: 800}} class='px-8'>
             <div class='flex flex-col w-full items-center'>
-					{#each data.termekek as termek}
-						{#if termek.kategoria == 'Étel'}
-                     <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-neutral-300 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
+		    	{#each data.termekek as termek}
+		    	{#if termek.kategoria == 'Étel'}
+                    <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-neutral-300 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
                         <div class="mr-4">
-                           <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
+                            <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
                         </div>
                         <a href="{termek.termek}?referrer=/list">
-                           <div class="justify-self-end">
-                              <div class="flex flex-col">
-                                 <div class=" h-fit">
-                                    <p class=" text-xl text-blue-300">{termek.termek}</p>
-                                    <p class="text-md">Elérhető: {termek.darab}db</p>
-                                 </div>
-                                 <div class="flex items-center">
-                                    <p class="text-2xl">{termek.ar} Ft</p>
-                                 </div>
-                              </div>
-                           </div>
+                            <div class="justify-self-end">
+                                <div class="flex flex-col">
+                                    <div class=" h-fit">
+                                        <p class=" text-xl text-blue-300">{termek.termek}</p>
+                                        <p class="text-md">Elérhető: {termek.darab}db</p>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <p class="text-2xl">{termek.ar} Ft</p>
+                                    </div>
+                                </div>
+                            </div>
                         </a>
-                  </div>
-						{/if}
-					{/each}
-				</div>
-			</div>
+                    </div>
+		    	{/if}
+		    	{/each}
+		    </div>
+		</div>
 		</SwiperSlide>
 
 		<SwiperSlide>
-			<div in:slide={{duration: 800}} class='px-8'>
-            <div class='flex flex-col w-full items-center'>
-					{#each data.termekek as termek}
-						{#if termek.kategoria == 'Ital'}
-                     <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-neutral-300 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
-                        <div class="mr-4">
-                           <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
+            <div in:slide={{duration: 800}} class='px-8'>
+                <div class='flex flex-col w-full items-center'>
+                    {#each data.termekek as termek}
+                    {#if termek.kategoria == 'Ital'}
+                        <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-neutral-300 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
+                            <div class="mr-4">
+                                <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
+                            </div>
+                            <a href="{termek.termek}?referrer=/list">
+                                <div class="justify-self-end">
+                                    <div class="flex flex-col">
+                                        <div class=" h-fit">
+                                            <p class=" text-xl text-blue-300">{termek.termek}</p>
+                                            <p class="text-md">Elérhető: {termek.darab}db</p>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <p class="text-2xl">{termek.ar} Ft</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                        <a href="{termek.termek}?referrer=/list">
-                           <div class="justify-self-end">
-                              <div class="flex flex-col">
-                                 <div class=" h-fit">
-                                    <p class=" text-xl text-blue-300">{termek.termek}</p>
-                                    <p class="text-md">Elérhető: {termek.darab}db</p>
-                                 </div>
-                                 <div class="flex items-center">
-                                    <p class="text-2xl">{termek.ar} Ft</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </a>
-                  </div>
-						{/if}
-					{/each}
-				</div>
-			</div>
+                    {/if}
+                    {/each}
+                </div>
+            </div>
 		</SwiperSlide>
 
 		<SwiperSlide>
-			<div in:slide={{duration: 800}} class='px-8'>
-            <div class='flex flex-col w-full items-center'>
-					{#each data.termekek as termek}
-						{#if termek.kategoria == 'Nasi'}
-                     <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-neutral-300 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
-                        <div class="mr-4">
-                           <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
+            <div in:slide={{duration: 800}} class='px-8'>
+                <div class='flex flex-col w-full items-center'>
+                    {#each data.termekek as termek}
+                    {#if termek.kategoria == 'Nasi'}
+                        <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-neutral-300 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
+                            <div class="mr-4">
+                                <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
+                            </div>
+                            <a href="{termek.termek}?referrer=/list">
+                                <div class="justify-self-end">
+                                    <div class="flex flex-col">
+                                        <div class=" h-fit">
+                                            <p class=" text-xl text-blue-300">{termek.termek}</p>
+                                            <p class="text-md">Elérhető: {termek.darab}db</p>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <p class="text-2xl">{termek.ar} Ft</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                        <a href="{termek.termek}?referrer=/list">
-                           <div class="justify-self-end">
-                              <div class="flex flex-col">
-                                 <div class=" h-fit">
-                                    <p class=" text-xl text-blue-300">{termek.termek}</p>
-                                    <p class="text-md">Elérhető: {termek.darab}db</p>
-                                 </div>
-                                 <div class="flex items-center">
-                                    <p class="text-2xl">{termek.ar} Ft</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </a>
-                  </div>
-						{/if}
-					{/each}
-				</div>
-			</div>
+                    {/if}
+                    {/each}
+                </div>
+            </div>
 		</SwiperSlide>
 
       <SwiperSlide>
-			<div in:slide={{duration: 800}} class='px-8'>
+		<div in:slide={{duration: 800}} class='px-8'>
             <div class='flex flex-col w-full items-center'>
-					{#each data.termekek as termek}
-						{#if termek.kategoria == 'Egyéb'}
-                     <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-neutral-300 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
+		    	{#each data.termekek as termek}
+		    	{#if termek.kategoria == 'Egyéb'}
+                    <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-neutral-300 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
                         <div class="mr-4">
-                           <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
+                            <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
                         </div>
                         <a href="{termek.termek}?referrer=/list">
-                           <div class="justify-self-end">
-                              <div class="flex flex-col">
-                                 <div class=" h-fit">
-                                    <p class=" text-xl text-blue-300">{termek.termek}</p>
-                                    <p class="text-md">Elérhető: {termek.darab}db</p>
-                                 </div>
-                                 <div class="flex items-center">
-                                    <p class="text-2xl">{termek.ar} Ft</p>
-                                 </div>
-                              </div>
-                           </div>
+                            <div class="justify-self-end">
+                                <div class="flex flex-col">
+                                    <div class=" h-fit">
+                                        <p class=" text-xl text-blue-300">{termek.termek}</p>
+                                        <p class="text-md">Elérhető: {termek.darab}db</p>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <p class="text-2xl">{termek.ar} Ft</p>
+                                    </div>
+                                </div>
+                            </div>
                         </a>
-                  </div>
-						{/if}
-					{/each}
-				</div>
-			</div>
+                    </div>
+		    	{/if}
+		    	{/each}
+		    </div>
+		</div>
 		</SwiperSlide>
-
  	</Swiper>
 
     <div class=" fixed left-0 bottom-0 mb-7 flex flex-row items-center justify-center w-full z-50">
-         <div in:fly={{y: 100}} class='flex justify-center items-center bg-slate-700 text-white h12 rounded-xl py-2 px-3'>
+        <div in:fly={{y: 100}} class='flex justify-center items-center bg-slate-700 text-white h12 rounded-xl py-2 px-3'>
             <div class="Étel mr-2 bg-slate-600 p-1.5 rounded-lg" class:nav-active='{$navigation == 0}' on:click={() => {navigate(0)}}><span>Étel</span></div>
             <div class="Ital mr-2 bg-slate-600 p-1.5 rounded-lg" class:nav-active='{$navigation == 1}' on:click={() => {navigate(1)}}><span>Ital</span></div>
             <div class="Nasi mr-2 bg-slate-600 p-1.5 rounded-lg" class:nav-active='{$navigation == 2}' on:click={() => {navigate(2)}}><span>Nasi</span></div>
             <div class="Egyéb bg-slate-600 p-1.5 rounded-lg" class:nav-active='{$navigation == 3}' on:click={() => {navigate(3)}}><span>Egyéb</span></div>
-
-         </div>
+        </div>
     </div>
-
-
-   <!-- <div in:fly={{y: 200}} class='nav'>
-	   <div class='Étel' on:click={() => {navigate(0)}}><p class:active='{$navigation == 0}'>Étel</p></div>
-	   <div class='Ital' on:click={() => {navigate(1)}}><p class:active='{$navigation == 1}'>Ital</p></div>
-	   <div class='Nasi' on:click={() => {navigate(2)}}><p class:active='{$navigation == 2}'>Nasi</p></div>
-   </div> -->
-
 </main>
