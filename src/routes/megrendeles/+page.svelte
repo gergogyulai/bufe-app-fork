@@ -100,7 +100,7 @@
 	></Topbar>
 
 	{#if confirmShow}
-	<div class="h-screen w-screen fixed top-0 left-0 bottom-0 right-0 bg-black bg-opacity-60 flex justify-center items-center">
+	<div class="h-screen w-screen fixed top-0 left-0 bottom-0 right-0 bg-black bg-opacity-60 backdrop-blur-sm flex justify-center items-center">
 		<div class="flex justify-center items-center flex-col w-3/4 lg:w-2/6 bg-gray-100 dark:bg-neutral-800 rounded-lg p-4 text-black dark:text-white drop-shadow-xl select-none">
 			<div class="flex w-full justify-center text-5xl m-2 drop-shadow-lg">
 				<span class="fa-regular fa-circle-exclamation"></span>
@@ -156,7 +156,7 @@
 						<label for="radio-0" class="ml-2 text-black dark:text-white">Készpénz</label>
 					</div>
 					{#if $total.ar < 500}
-						<div class="flex items-center opacity-70">
+						<div class="flex items-center ">
 							<input disabled id="radio-1" type="radio" value="" name="default-radio" class="w-4 h-4 text-cyan-600 bg-gray-100 border-gray-300 dark:ring-offset-gray-800 focus:ring-0 dark:bg-gray-700 dark:border-gray-600">
 							<label for="radio-1" class="ml-2 text-black dark:text-white">Bankkártya (min. 500Ft)</label>
 						</div>
