@@ -41,7 +41,6 @@
 <ZarasErtesito></ZarasErtesito>
 
 <svelte:head>
-   <!-- <link rel="stylesheet" href="https://cdn.staticaly.com/gh/hung1001/font-awesome-pro-v6/44659d9/css/all.min.css" type="text/css" /> -->
    <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />
    <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet">
     {@html webManifest}
