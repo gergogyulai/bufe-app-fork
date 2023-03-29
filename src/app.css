@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.nav-active {
+    @apply bg-cyan-600 text-white
+ };
