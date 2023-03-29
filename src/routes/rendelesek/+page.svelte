@@ -15,7 +15,7 @@
 	async function handleSubmit(event) {
 		if (confirm('Biztos végleg törlöd a rendelést? A törölt rendelések nem számitanak bele az ár összesitésbe!')) {
 			const data = new FormData(this);
-      	const response = await fetch(this.action, {
+      		const response = await fetch(this.action, {
 				method: 'POST',
 				body: data
 			})
@@ -38,6 +38,7 @@
       	background={'none'}
       	flyin={{y: -200}}
 	  	hideProfile={0}
+		kosar={true}
    	></Topbar>
 	<div class="p-8">
 		{#each data.elozmenyLista as record, i (record.id)}
