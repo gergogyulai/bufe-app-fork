@@ -8,3 +8,4 @@ node_modules
 !.env.example
 bufe-app
 /src/routes/dev
+src/lib/Pocketbase/pb_data/logs.db
