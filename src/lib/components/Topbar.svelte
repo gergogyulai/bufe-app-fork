@@ -16,7 +16,7 @@
       <div class="flex justify-center items-center ">
          <a data-sveltekit-noscroll class=" drop-shadow-md text-cyan-600 hover:text-cyan-500 dark:text-white flex items-center ml-2 mr-auto" href="{targeturl}"><span class="fa-solid fa-arrow-left pr-1"></span> {target}</a>
       </div>
-      <div class="flex justify-center items-center">
+      <div class="flex justify-center items-center dark:text-white">
          <h1>{text}</h1>
       </div>
       <div class=" flex justify-end items-center pr-1">
