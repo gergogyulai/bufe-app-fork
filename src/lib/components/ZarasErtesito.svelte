@@ -17,7 +17,6 @@
 	  	const { message } = await res.json();
 
 	  	const messageHandler = getMessageHandler(message);
-		console.log(message)
 	  	messageHandler();
 	}
 
@@ -35,7 +34,7 @@
   		if (handler) {
     		return handler;
   		} else {
-    		return () => console.log("unknown message from api/zaras");
+    		return () => console.log(message, Date());
   		}
 	}
 

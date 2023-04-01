@@ -1,42 +1,54 @@
-import { bufeClosed } from "$lib/stores/Closed.js";
+import { bufeClosed } from "$lib/stores/BufeClosed.js";
+
+function isWeekend(dayOfWeek) {
+  	return dayOfWeek === 3 || dayOfWeek === 4;
+}
+
+function getMinutesUntil(date) {
+  	const now = new Date();
+  	return Math.floor((date - now) / 60000);
+}
+
+function getMessage() {
+  	const now = new Date();
+  	const dayOfTheWeek = now.getDay();
+  	const zaras = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 0, 0);
+  	const nyitas = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0, 0);
+  
+  	if (isWeekend(dayOfTheWeek)) {
+    	bufeClosed.set(1);
+    	return "hetvege";
+  	} else if (zaras - now <= 0) {
+    	bufeClosed.set(1);
+    	return "closed";
+  	}
+  
+  	const minutesUntil = getMinutesUntil(zaras);
+  
+  	if (minutesUntil <= 60) {
+    	bufeClosed.set(0);
+  	}
+  
+  	if (minutesUntil <= 10) {
+  	  	return "10minLeft";
+  	} else if (minutesUntil <= 20) {
+  	  	return "20minLeft";
+  	} else if (minutesUntil <= 30) {
+  	  	return "30minLeft";
+  	} else if (minutesUntil <= 60) {
+  	  	return "60minLeft";
+  	} else if (nyitas - now <= now) {
+  	  	bufeClosed.set(0);
+  	  	return "nyitva";
+  	}
+}
 
 export function GET() {
-	const now = new Date();
-	const zaras = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 0, 0);
-	const nyitas = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0, 0);
-	const zarasDifference = zaras - now;
-	const nyitasDifference = nyitas - now;
-	const dayOfTheWeek = now.getDay();
-	let message;
+  	const message = getMessage();
   
-	if (dayOfTheWeek === 0 || dayOfTheWeek === 6) {
-		bufeClosed.set(true);
-	  	message = "weekend";
-	} else if (zarasDifference <= 0) {
-		bufeClosed.set(true);
-	  	message = "closed";
-	} else if (zarasDifference <= 10 * 60000) {
-		bufeClosed.set(false);
-	  	message = "10minLeft";
-	} else if (zarasDifference <= 20 * 60000) {
-		bufeClosed.set(false);
-	  	message = "20minLeft";
-	} else if (zarasDifference <= 30 * 60000) {
-		bufeClosed.set(false);
-	  	message = "30minLeft";
-	} else if (zarasDifference <= 60 * 60000) {
-		bufeClosed.set(false);
-	  	message = "60minLeft";
-	} else if (nyitasDifference <= now){
-		bufeClosed.set(false);
-	  	message = "nyitva";
-	} else {
-		message = "error with time";
-	};
+  	const body = JSON.stringify({ message });
+  	const headers = { "Content-Type": "application/json" };
+  	const response = new Response(body, { headers });
   
-	const body = JSON.stringify({ message });
-	const headers = { "Content-Type": "application/json" };
-	const response = new Response(body, { headers });
-	
-	return response;
-}  
+  	return response;
+}
