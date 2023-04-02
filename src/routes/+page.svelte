@@ -1,7 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
 	export let data;
-	import Topbar from '$lib/components/Topbar.svelte';
 </script>
  
 <main class="overflow-auto w-screen h-screen bg-white dark:bg-slate-900 p-8" in:fade={{duration: 180}}>

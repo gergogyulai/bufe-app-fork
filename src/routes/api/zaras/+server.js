@@ -1,7 +1,7 @@
 import { bufeClosed } from "$lib/stores/BufeClosed.js";
 
 function isWeekend(dayOfWeek) {
-  	return dayOfWeek === 3 || dayOfWeek === 4;
+  	return dayOfWeek === 0 || dayOfWeek === 6;
 }
 
 function getMinutesUntil(date) {
