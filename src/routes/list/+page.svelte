@@ -10,11 +10,9 @@
     export let data;
 
     let swiper;
-    let cartshow = 0;
 
     if (browser) {
         if (localStorage.getItem('CartContent') != null) {
-            cartshow = 1;
             $cart = JSON.parse(localStorage.getItem('CartContent'));
 			$total = JSON.parse(localStorage.getItem('Total'));
         };
@@ -57,7 +55,7 @@
                     break;
                 case kategoria.Egyéb:
 					navigate(3)
-                break;
+                    break;
 			}
 		}
 	}
@@ -99,9 +97,9 @@
             <div class='flex flex-col w-full items-center'>
 		    	{#each data.termekek as termek}
 		    	{#if termek.kategoria == 'Étel'}
-                    <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-gray-200 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
+                    <div class="flex flex-row mb-4 w-full items-center transition hover:scale-105 rounded-lg bg-gray-200 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
                         <div class="mr-4">
-                            <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
+                            <img class=" rounded-l-lg h-32 w-32 object-cover" src="{termek.termek}.png" alt="">
                         </div>
                         <a href="{termek.termek}?referrer=/list">
                             <div class="justify-self-end">
@@ -179,7 +177,7 @@
                     {/each}
                 </div>
             </div>
-		</SwiperSlide>
+        </SwiperSlide>
 
       <SwiperSlide>
 		<div in:slide={{duration: 800}} class='px-8 drop-shadow-md'>
@@ -211,16 +209,12 @@
 		</SwiperSlide>
  	</Swiper>
 
-    <div class=" fixed left-0 bottom-0 mb-7 flex flex-row items-center justify-center w-full z-50">
+    <div class="fixed left-0 bottom-0 mb-7 flex flex-row items-center justify-center w-full z-50">
         <div in:fly={{y: 100}} class='flex justify-center items-center backdrop-blur-lg dark:backdrop-blur-xl bg-gray-300 dark:bg-slate-700 bg-opacity-40 dark:bg-opacity-50 text-neutral-800 dark:text-white h12 rounded-xl py-2 px-3'>
-            <div class="Étel mr-2 p-1.5 rounded-lg" class:nav-active='{$navigation == 0}' on:click={() => {navigate(0)}}><span>Étel</span></div>
-            <div class="Ital mr-2 p-1.5 rounded-lg" class:nav-active='{$navigation == 1}' on:click={() => {navigate(1)}}><span>Ital</span></div>
-            <div class="Nasi mr-2 p-1.5 rounded-lg" class:nav-active='{$navigation == 2}' on:click={() => {navigate(2)}}><span>Nasi</span></div>
-            <div class="Egyéb p-1.5 rounded-lg" class:nav-active='{$navigation == 3}' on:click={() => {navigate(3)}}><span>Egyéb</span></div>
+            <div class="Étel mr-2 p-1.5 cursor-pointer rounded-lg" class:nav-active='{$navigation == 0}' on:click={() => {navigate(0)}}><span>Étel</span></div>
+            <div class="Ital mr-2 p-1.5 cursor-pointer rounded-lg" class:nav-active='{$navigation == 1}' on:click={() => {navigate(1)}}><span>Ital</span></div>
+            <div class="Nasi mr-2 p-1.5 cursor-pointer rounded-lg" class:nav-active='{$navigation == 2}' on:click={() => {navigate(2)}}><span>Nasi</span></div>
+            <div class="Egyéb p-1.5 cursor-pointer rounded-lg" class:nav-active='{$navigation == 3}' on:click={() => {navigate(3)}}><span>Egyéb</span></div>
         </div>
-    </div>
-
-    <div class="fixed left-0 -bottom-10 h-20 blur-xl w-screen">
-
     </div>
 </main>
