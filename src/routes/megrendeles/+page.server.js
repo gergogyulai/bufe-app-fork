@@ -14,17 +14,17 @@ export async function load({ locals }) {
 	const hatodikSzunet = new Date().setHours(13, 30, 0, 0);
 
 	if (now < elsoSzunet) {
-		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '2.szunet', label: '2. szünet (9:40-9:50)'},{value: '3.szunet', label: '3. szünet (10:35-10:45)'},{value: '4.szunet', label: '4. szünet (11:30-11:40)'},{value: '5.szunet', label: 'Ebédszünet (12:25-12:45)'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
+		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '1.szunet', label: '1. szünet (8:45-8:55)'},{value: '2.szunet', label: '2. szünet (9:40-9:50)'},{value: '3.szunet', label: '3. szünet (10:35-10:45)'},{value: '4.szunet', label: '4. szünet (11:30-11:40)'},{value: '5.szunet', label: 'Ebédszünet (12:25-12:45)'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
 	} else if (now < masodikSzunet) {
-		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '3.szunet', label: '3. szünet (10:35-10:45)'},{value: '4.szunet', label: '4. szünet (11:30-11:40)'},{value: '5.szunet', label: 'Ebédszünet (12:25-12:45)'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
+		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '2.szunet', label: '2. szünet (9:40-9:50)'},{value: '3.szunet', label: '3. szünet (10:35-10:45)'},{value: '4.szunet', label: '4. szünet (11:30-11:40)'},{value: '5.szunet', label: 'Ebédszünet (12:25-12:45)'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
 	} else if (now < harmadikSzunet) {
-		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '4.szunet', label: '4. szünet (11:30-11:40)'},{value: '5.szunet', label: 'Ebédszünet (12:25-12:45)'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
+		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '3.szunet', label: '3. szünet (10:35-10:45)'},{value: '4.szunet', label: '4. szünet (11:30-11:40)'},{value: '5.szunet', label: 'Ebédszünet (12:25-12:45)'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
 	} else if (now < negyedikSzunet) {
-		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '5.szunet', label: 'Ebédszünet (12:25-12:45)'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
+		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '4.szunet', label: '4. szünet (11:30-11:40)'},{value: '5.szunet', label: 'Ebédszünet (12:25-12:45)'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
 	} else if (now < ebedSzunet) {
-		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
+		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '5.szunet', label: 'Ebédszünet (12:25-12:45)'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
 	} else if (now < hatodikSzunet) {
-		atveteliOpciok = [{value: 'Most', label: 'Most'}];
+		atveteliOpciok = [{value: 'Most', label: 'Most'},{value: '6.szunet', label: '6. szünet (13:30-13:35)'}];
 	} else {
 		atveteliOpciok = [{value: 'Most', label: 'Most'}];
 	};

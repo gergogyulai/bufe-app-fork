@@ -183,7 +183,7 @@
 
 			<div class="text-center">
 				<p class="text-center">Átvételi idő:</p>
-				<select bind:value={atveteliIdo} class=" placeholder-black w-full p-2 rounded-lg dark:bg-neutral-700 bg-gray-200 focus:outline focus:ring-0 focus:outline-cyan-500">
+				<select bind:value={atveteliIdo} class="w-full p-2 rounded-lg dark:bg-slate-700 bg-gray-200 focus:outline focus:ring-0 focus:outline-cyan-500">
 					<option class="w-full" disabled selected >Válassz egy átvételi időt</option>
 					{#each data.atveteliOpciok as opcio}
 						<option value={opcio.value}>{opcio.label}</option>
@@ -193,9 +193,10 @@
 
 			<div class="flex flex-col w-full justify-center items-center mt-4 mb-3">
 				{#if bufeClosedStatus = 0}
-					<button class=" bg-cyan-500 text-white dark:bg-neutral-600 p-2 rounded-xl w-10/12" on:click={() => confirmShow = true}>Rendelés leadása</button>
+					<button class=" bg-cyan-500 text-white dark:bg-slate-600 p-2 rounded-xl w-10/12" on:click={() => confirmShow = true}>Rendelés leadása</button>
 				{:else if bufeClosedStatus = 1}
-					<button disabled class=" bg-cyan-500 text-white dark:bg-neutral-600 p-2 rounded-xl w-10/12 opacity-60">Rendelés leadása</button>
+					<button disabled class=" bg-cyan-500 text-white dark:bg-slate-600 p-2 rounded-xl w-10/12 opacity-60">Rendelés leadása</button>
+					<p class="mt-2 text-red-500">Jelenleg a büfé zárva van</p>
 				{/if}
 			</div>
 		</div>

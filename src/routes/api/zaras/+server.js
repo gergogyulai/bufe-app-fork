@@ -1,3 +1,6 @@
+//tovabbra is szar az egesz
+//nem irja az a bufeClosed erteket
+
 import { bufeClosed } from "$lib/stores/BufeClosed.js";
 
 function isWeekend(dayOfWeek) {
