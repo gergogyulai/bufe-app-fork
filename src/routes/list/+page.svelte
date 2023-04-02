@@ -99,7 +99,7 @@
 		    	{#if termek.kategoria == 'Étel'}
                     <div class="flex flex-row mb-4 w-full items-center transition hover:scale-105 rounded-lg bg-gray-200 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
                         <div class="mr-4">
-                            <img class=" rounded-l-lg h-32 w-32 object-cover" src="{termek.termek}.png" alt="">
+                            <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="termekkep">
                         </div>
                         <a href="{termek.termek}?referrer=/list">
                             <div class="justify-self-end">
