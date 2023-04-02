@@ -2,9 +2,11 @@
 	import { slide, fade } from "svelte/transition";
 	import { cart, total } from "$lib/stores/Cart.js";
 	import Topbar from '$lib/components/Topbar.svelte';
+    import Urites from '$lib/components/kosar/Urites.svelte';
 
 	export let data;
- 
+    let showRemoveConfirm = false;
+
 	if (localStorage.getItem('CartContent') != null) {
         $cart = JSON.parse(localStorage.getItem('CartContent'));
 	    $total = JSON.parse(localStorage.getItem('Total'));
@@ -20,12 +22,6 @@
 		    });
 	};
  
-	function urites() {
-	    localStorage.clear();
-	    $cart = {};
-	    $total = { 'ar': 0, 'darab': 0, 'feltet': [] };
-	};
- 
 	function subtractAmount(termek) {
 	    if ($cart[termek].darab > 1) {
 		    let price = $cart[termek].ar / $cart[termek].darab;
@@ -34,15 +30,19 @@
 		    $cart[termek].darab--;
 		    recalculate();
 	    } else {
-		    delete $cart[termek];
-		    $cart = $cart; // Muszaj reactivity miatt
-		    recalculate();
-		    if (Object.keys($cart).length === 0) {
-			    localStorage.removeItem('CartContent');
-			    history.back()
-		  }
-	   }
+            removeCartItem();
+        }
 	};
+
+    function removeCartItem(termek) {
+        delete $cart[termek];
+		$cart = $cart;
+		recalculate();
+		if (Object.keys($cart).length === 0) {
+			localStorage.removeItem('CartContent');
+			history.back()
+        }
+    }
  
 	function addAmount(termek) {
 	    // * Elegge gusztustalan megoldas vegig loopolni es megtalalni a darabszamat a termeknek
@@ -84,7 +84,7 @@
             <div in:fade="{{duration: 300}}">            
                 <h2 class="text-2xl m-2">Kosarad még üres :(</h2>
                 <h2 class="text-lg mb-4">Nézd meg a termékeket és rendelj még ma!</h2>
-                <a class=" bg-cyan-500 dark:bg-slate-800 font-bold text-gray-200 text-center p-3 w-40 rounded-xl" href="/list">Termékek megtekintése</a>
+                <a class=" bg-cyan-500 dark:bg-slate-800 font-bold text-white text-center p-3 w-40 rounded-xl" href="/list">Termékek megtekintése</a>
             </div>
         </div>
         {/if}
@@ -99,21 +99,23 @@
                 <a href="/{termek}">
                     <h1 class=" text-lg text-center">{termek}</h1>
                 </a>
-                <div class="flex justify-center bg-gray-300 dark:bg-slate-700 p-1 m-1 rounded-3xl border border-slate-200 dark:border-slate-600">
+                <div class="flex justify-center bg-gray-300 dark:bg-slate-700 p-1 m-1 rounded-full dark:highlight-white/5 shadow-highlight">
                     <div class="mx-2 rounded-full">
                         {#if $cart[termek].darab > 1}
-                            <button class=" p-1 rounded-full dark:text-white text-cyan-500" on:click="{() => {subtractAmount(termek)}}">
+                            <button class=" p-1 rounded-full dark:text-white text-cyan-500" on:click={() => {subtractAmount(termek)}}>
                                 <span class="fa-solid fa-minus" in:fade="{{duration: 200}}"></span>
                             </button>
                         {:else}
-                            <button class=" p-1 rounded-full dark:text-white text-cyan-500" on:click="{() => {subtractAmount(termek)}}">
-                                <span class="fa-solid fa-x text-red-500 font-bold" in:fade="{{duration: 200}}"></span>
+                            <button class=" p-1 rounded-full dark:text-white text-cyan-500" on:click={() => {removeCartItem(termek)}}>
+                                <span class="fa-solid fa-trash-can text-red-500 font-bold" in:fade="{{duration: 200}}"></span>
                             </button>
                         {/if}
                     </div>
+
                     {#key $cart[termek].ar}
                         <div in:fade="{{duration: 50}}" class="mx-1 text-center p-1 rounded-full">{$cart[termek].darab}</div>
                     {/key}
+
                     <div class="mx-2 rounded-full">
                         <button on:click="{() => {addAmount(termek)}}" class=" p-1 rounded-full dark:text-white text-cyan-500">
                             <i class="fa-solid fa-plus"></i>
@@ -131,11 +133,7 @@
         {/each}
          
         {#if Object.keys($cart).length != 0}
-            <div class=" flex w-full justify-center">
-                <div class="urites">
-                    <button class="bg-red-500 font-bold text-white text-center p-2 w-40 m-2 rounded-xl" on:click={() => {urites(); }}>Kosár üritése</button>
-               </div>
-            </div>
+            <Urites></Urites>
         {/if}
 
         {#if Object.keys($cart).length != 0}
