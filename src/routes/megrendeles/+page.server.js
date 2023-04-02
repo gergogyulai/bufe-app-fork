@@ -27,11 +27,10 @@ export async function load({ locals }) {
 		atveteliOpciok = [{value: 'Most', label: 'Most'}];
 	} else {
 		atveteliOpciok = [{value: 'Most', label: 'Most'}];
-	}
+	};
 
 	return {
-		'termekek': structuredClone(await locals.pb.collection('termekek').getFullList(1, {})), 
-		atveteliOpciok
+		'termekek': structuredClone(await locals.pb.collection('termekek').getFullList(1, {})), atveteliOpciok
 	};
 };
 

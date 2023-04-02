@@ -78,7 +78,7 @@
 		} else if (atveteliIdo === 'Válassz egy átvételi időt'){
 			alert("Nem adtál meg átvételi idot");
 			confirmShow = false;
-		}
+		};
 
 	   const data = new FormData(this);
 	   const response = await fetch(this.action, {
