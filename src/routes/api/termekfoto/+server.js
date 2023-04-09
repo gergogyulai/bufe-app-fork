@@ -9,7 +9,8 @@ export async function GET({ locals, fetch, url }) {
         const placeholderImg = await fetch('https://generative-placeholders.glitch.me/image?width=400&height=400&style=joy-division');
         return new Response(await placeholderImg.blob(), {
             headers: {
-                'Content-Type': 'image/*'
+                'Content-Type': 'image/*',
+                'Cache-Control': 'max-age=300'
             }
         });
     }
