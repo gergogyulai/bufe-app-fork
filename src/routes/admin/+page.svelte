@@ -8,7 +8,7 @@
 	import Leiras from '$lib/components/admin/Leiras.svelte';
 	import Feltet from '$lib/components/admin/Feltet.svelte';
 	import Kategoria from '$lib/components/admin/Kategoria.svelte';
-	
+	import Nyitvatartas from '$lib/components/admin/Nyitvatartas.svelte'; 
 	
 	export let data;
 	
@@ -18,6 +18,8 @@
 	let leirasModal;
 	let feltetModal;
 	let kategoriaModal;
+	let NyitvatartasModal;
+
 	
 	setInterval(async () => {
 		invalidateAll()
@@ -89,6 +91,7 @@
 				<button on:click={leirasModal.showModal()}>Leirás</button>
 				<button on:click={feltetModal.showModal()}>Feltét</button>
 				<button on:click={kategoriaModal.showModal()}>Kategória</button>
+				<button on:click={NyitvatartasModal.showModal()}>Nyitvatartas</button>
 			</div>
 		</div>
 	</div>
@@ -101,6 +104,7 @@
 	<Leiras bind:leirasModal data={data}></Leiras>
 	<Feltet bind:feltetModal data={data}></Feltet>
 	<Kategoria bind:kategoriaModal data={data}></Kategoria>
+	<Nyitvatartas bind:NyitvatartasModal data={data}></Nyitvatartas>
 	
 	</main>
 	
