@@ -13,7 +13,7 @@
 	});
 
 	async function checkTime() {
-	  	const res = await fetch('/api/zaras');
+	  	const res = await fetch('/api/nyitvatartas');
 	  	const { message } = await res.json();
 
 	  	const messageHandler = getMessageHandler(message);

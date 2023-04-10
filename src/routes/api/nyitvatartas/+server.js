@@ -18,9 +18,11 @@ function getMessage() {
 	
     nyitasIdo.subscribe(value => {
         nyitasValue = value;
+        console.log(value);
     });
     zarasIdo.subscribe(value => {
         zarasValue = value;
+        console.log(value);
     });
 
     const nyitas = new Date(now.getFullYear(), now.getMonth(), now.getDate(), nyitasValue.hour, nyitasValue.minute, 0);
