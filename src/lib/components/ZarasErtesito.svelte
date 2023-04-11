@@ -28,6 +28,7 @@
     		"30minLeft": () => showNotification('A büfé fél óra múlva bezár', '#ffffff', '#363636'),
     		"60minLeft": () => showNotification('A büfé 1 óra múlva bezár', '#ffffff', '#363636'),
     		"hetvege": () =>  showNotification('A büfé jelenleg zárva van', '#ffffff', '#363636'),
+			"megZarva": () =>  showNotification('A büfé jelenleg zárva van', '#ffffff', '#363636'),
 			"nyitva": () => console.log("bufe nyitva")
   		};
   		const handler = handlers[message];
