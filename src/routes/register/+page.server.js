@@ -13,6 +13,7 @@ export const actions = {
 
 		try {
 			await locals.pb.collection('users').create({ ...body });
+			await locals.pb.collection('users').authWithPassword(body.email, body.password);
 		} catch (err) {
 			console.log(err.data.data);
 
