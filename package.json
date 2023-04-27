@@ -22,11 +22,9 @@
 	},
 	"dependencies": {
 		"@sveltejs/adapter-node": "^1.0.0-next.96",
-		"canvas": "^2.11.2",
 		"eslint-plugin-svelte3": "^4.0.0",
 		"pocketbase": "^0.8.0-rc3",
 		"svelte-french-toast": "^1.0.3",
-		"swiper": "^8.4.5",
-		"ws": "^8.13.0"
+		"swiper": "^9.1.1"
 	}
 }
