@@ -6,7 +6,9 @@
 <main class="overflow-auto w-screen h-screen bg-white dark:bg-slate-900 p-8" in:fade={{duration: 180}}>
 
 	<div class="flex flex-col w-full h-full justify-center items-center">
-		<div class="flex flex-col items-start">
+		<div class="flex flex-row items- justify-center">
+			<a href="/profil"><img src="/api/avatar" class="border transition ease-in-out hover:scale-105 border-slate-200 dark:border-slate-600 rounded-lg h-16 w-16" alt=""></a>
+			<div class=" w-px mt-1 mx-2 h-14 opacity-50 bg-gray-600"></div>
 			<div class=" dark:text-white text-black mb-4 text-2xl font-bold text-left">Szia, <br> <span class=" text-cyan-500">{data.name}</span>!</div>
 		</div>
 		<div class=" flex flex-col md:flex-row items-center text-white">
@@ -41,7 +43,4 @@
 			</a>
 		</div>
 	</div>
-
-	 <!-- <div class="text-black dark:text-white text-center">{data.splash}</div> -->
-
 </main>

@@ -1,26 +1,31 @@
 <script>
     import { fly, slide } from 'svelte/transition';
-	import { Swiper, SwiperSlide } from 'swiper/svelte';
-	import 'swiper/css';
-    import { browser } from '$app/environment';
+	import { register } from 'swiper/element/bundle';
+    import { onMount } from 'svelte';
     import { cart, total } from '$lib/stores/Cart.js';
     import { navigation } from '$lib/stores/Navigation.js';
     import Topbar from '$lib/components/Topbar.svelte';
 
-    export let data;
+    export let data
 
-    let swiper;
+    let swiper
 
-    if (browser) {
-        if (localStorage.getItem('CartContent') != null) {
-            $cart = JSON.parse(localStorage.getItem('CartContent'));
+	onMount(() => {
+        register();
+
+		swiper.addEventListener('slidechange', (e) => {
+			$navigation = e.detail[0].activeIndex;
+		});
+
+		if (localStorage.getItem('CartContent')) {
+			$cart = JSON.parse(localStorage.getItem('CartContent'));
 			$total = JSON.parse(localStorage.getItem('Total'));
-        };
-    };
+		}
+	});
 
 	function navigate(i) {
-		swiper.slideTo(i);
-		$navigation = i
+		swiper.swiper.slideTo(i);
+		$navigation = i;
 	}
 
 	// Search Bar
@@ -82,24 +87,22 @@
         </label>
     </div>
 
-	<Swiper
-	initialSlide={$navigation}
-	resistanceRatio={0.5}
-	speed={370}
-	spaceBetween={20}
-	slidesPerView={1}
-	on:slideChange={e => {$navigation = e.detail[0].activeIndex}}
-	on:swiper={e => {swiper = e.detail[0]}}
- 	>
-   
-		<SwiperSlide>
+	<swiper-container class="mb-32"
+	    initial-slide={$navigation}
+	    resistance-ratio={'0.5'}
+	    speed={'370'}
+	    space-between={'20'}
+	    slides-per-view={'1'}
+	    bind:this={swiper}
+	>   
+		<swiper-slide>
 		<div in:slide={{duration: 800}} class='px-8 drop-shadow-md'>
             <div class='flex flex-col w-full items-center'>
 		    	{#each data.termekek as termek}
 		    	{#if termek.kategoria == 'Étel'}
                     <div class="flex flex-row mb-4 w-full items-center transition hover:scale-105 rounded-lg bg-gray-200 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
                         <div class="mr-4">
-                            <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="termekkep">
+                            <img class=" rounded-l-lg h-32 w-32 object-cover" src="/api/termekfoto/?termek={termek.id}" alt="termekkep">
                         </div>
                         <a href="{termek.termek}?referrer=/list">
                             <div class="justify-self-end">
@@ -119,16 +122,16 @@
 		    	{/each}
 		    </div>
 		</div>
-		</SwiperSlide>
+		</swiper-slide>
 
-		<SwiperSlide>
+		<swiper-slide>
             <div in:slide={{duration: 800}} class='px-8 drop-shadow-md'>
                 <div class='flex flex-col w-full items-center'>
                     {#each data.termekek as termek}
                     {#if termek.kategoria == 'Ital'}
                         <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-gray-200 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
                             <div class="mr-4">
-                                <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
+                                <img class=" rounded-l-lg h-32 w-32 object-cover" src="/api/termekfoto/?termek={termek.id}" alt="">
                             </div>
                             <a href="{termek.termek}?referrer=/list">
                                 <div class="justify-self-end">
@@ -148,16 +151,16 @@
                     {/each}
                 </div>
             </div>
-		</SwiperSlide>
+		</swiper-slide>
 
-		<SwiperSlide>
+		<swiper-slide>
             <div in:slide={{duration: 800}} class='px-8 drop-shadow-md'>
                 <div class='flex flex-col w-full items-center'>
                     {#each data.termekek as termek}
                     {#if termek.kategoria == 'Nasi'}
                         <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-gray-200 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
                             <div class="mr-4">
-                                <img class=" rounded-l-lg h-32 w-32 object-cover" src="hamburger.jpg" alt="">
+                                <img class=" rounded-l-lg h-32 w-32 object-cover" src="/api/termekfoto/?termek={termek.id}" alt="">
                             </div>
                             <a href="{termek.termek}?referrer=/list">
                                 <div class="justify-self-end">
@@ -177,16 +180,16 @@
                     {/each}
                 </div>
             </div>
-        </SwiperSlide>
+        </swiper-slide>
 
-      <SwiperSlide>
+      <swiper-slide>
 		<div in:slide={{duration: 800}} class='px-8 drop-shadow-md'>
             <div class='flex flex-col w-full items-center'>
 		    	{#each data.termekek as termek}
 		    	{#if termek.kategoria == 'Egyéb'}
                     <div class="flex flex-row mb-4 w-full items-center rounded-lg bg-gray-200 dark:bg-slate-800 dark:text-neutral-100 text-neutral-900" class:opacity-40={termek.darab == 0}>
                         <div class="mr-4">
-                            <img class=" rounded-l-lg h-32 w-32 object-cover" src="favicon.png" alt="">
+                            <img class=" rounded-l-lg h-32 w-32 object-cover" src="/api/termekfoto/?termek={termek.id}" alt="">
                         </div>
                         <a href="{termek.termek}?referrer=/list">
                             <div class="justify-self-end">
@@ -206,8 +209,8 @@
 		    	{/each}
 		    </div>
 		</div>
-		</SwiperSlide>
- 	</Swiper>
+		</swiper-slide>
+ 	</swiper-container>
 
     <div class="fixed left-0 bottom-0 mb-7 flex flex-row items-center justify-center w-full z-50">
         <div in:fly={{y: 100}} class='flex justify-center items-center backdrop-blur-lg dark:backdrop-blur-xl bg-gray-300 dark:bg-slate-700 bg-opacity-40 dark:bg-opacity-50 text-neutral-800 dark:text-white h12 rounded-xl py-2 px-3'>
