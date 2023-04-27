@@ -5,14 +5,20 @@
 	import { fade } from "svelte/transition";
 	import { cart, total } from "$lib/stores/Cart.js";
 	import Topbar from '$lib/components/Topbar.svelte';
+	import { favs } from '$lib/stores/Favs.js'
+
 
 	export let data;
 
 	const termek = data.termekek.termek;
 	const darab = data.termekek.darab
 	const description = data.termekek.leiras
- 
-	let tempcart = {[termek] : { 'ar': 0, 'darab': 0, 'feltet': [] }};
+	const termekid = data.termekek.id
+
+	console.log(termekid)
+	 
+	let tempcart = {[termek] : { 'ar': 0, 'darab': 0, 'id': termekid, 'feltet': [] }};
+
 	$: amount = 1;
 	$: price = data.termekek.ar * amount;
  
@@ -20,7 +26,7 @@
 	   $cart = JSON.parse(localStorage.getItem('CartContent'));
 	   tempcart = $cart;
 	   if (tempcart[termek] == undefined) {
-		  tempcart[termek] = { 'ar': 0, 'darab': 0, 'feltet': [] }
+		  tempcart[termek] = { 'ar': 0, 'darab': 0, 'id': termekid, 'feltet': [] }
 	   }
 	}
  
@@ -38,7 +44,7 @@
  
 	function buy() {
 	   if (tempcart[termek].darab < darab) {
-			 $cart[termek] = {'ar': tempcart[termek].ar + price, 'darab': tempcart[termek].darab + amount, 'feltet': tempcart[termek].feltet}
+			 $cart[termek] = {'ar': tempcart[termek].ar + price, 'darab': tempcart[termek].darab + amount, 'id': tempcart[termek].id ,'feltet': tempcart[termek].feltet}
  
 			 $total = { 'ar': 0, 'darab': 0, 'feltet': [] }
 			 Object.keys($cart).forEach(termek => {
@@ -54,6 +60,25 @@
 		  alert(`Túl sok ${termek} van már a kosárban!`)
 	   }
 	};
+
+	// function fav() {
+	//    if (tempcart[termek].darab < darab) {
+	// 		 $cart[termek] = {'id': termek.id}
+ 
+	// 		 $total = { 'ar': 0, 'darab': 0, 'feltet': [] }
+	// 		 Object.keys($cart).forEach(termek => {
+	// 			 $total.ar += $cart[termek].ar
+	// 			 $total.darab += $cart[termek].darab
+	// 		 });
+ 
+	// 	  localStorage.setItem('CartContent',JSON.stringify($cart));
+	// 	  localStorage.setItem('Total',JSON.stringify($total));
+ 
+	// 	  goto("/list?Category=".concat($page.url.searchParams.get('Category')))
+	//    } else {
+	// 	  alert(`Túl sok ${termek} van már a kosárban!`)
+	//    }
+	// };
 	
 	function feltetChange(feltet,feltetAr,feltetDarab) {
 		 if (tempcart[termek].feltet.includes(feltet)) {
@@ -77,8 +102,8 @@
 	></Topbar>
 	<div>
 		<div class="p-8">
-			<div class=" bg-gray-200 dark:bg-slate-800 rounded-xl text-center mb-4 p-2">
-				<img class=" m-auto mb-6" src="favicon.png" alt="">
+			<div class=" bg-gray-200 dark:bg-slate-800 rounded-xl text-center mb-4 p-3">
+				<img class=" m-auto mb-4 max-h-72 rounded-lg object-cover" src="/api/termekfoto/?termek={data.termekek.id}" alt="">
 				<h1 class=" text-2xl text-center">{termek}</h1>
 
 				{#if data.termekek.badges}
@@ -150,7 +175,10 @@
 					</div>
 					<div class=" flex w-full mt-2 justify-center">
 						<button on:click={buy} class=" bg-cyan-500 hover:bg-cyan-600 dark:hover:bg-slate-500 text-white dark:bg-slate-600 p-2 w-9/12 rounded-full text-center mr-2"><i class="fa-regular fa-cart-shopping"></i> Kosárhoz adás</button>
-						<button on:click={buy} class=" bg-cyan-500 hover:bg-cyan-600 dark:hover:bg-slate-500 text-white dark:bg-slate-600 p-2 w-12 rounded-full text-center"><i class="fa-solid fa-star"></i></button>
+						<form method="POST" action="?/logout">
+							<input hidden value="{$favs}" type="text">
+							<button class=" bg-cyan-500 hover:bg-cyan-600 dark:hover:bg-slate-500 text-white dark:bg-slate-600 p-2 w-12 rounded-full text-center"><i class="fa-solid fa-star"></i></button>
+						</form>
 					</div>
 				</div>
 			{:else}

@@ -6,15 +6,34 @@
 	import { cart, total } from "$lib/stores/Cart.js";
 	import Topbar from '$lib/components/Topbar.svelte';
 	import { bufeClosed } from "$lib/stores/BufeClosed.js";
+	import { onMount } from 'svelte';
   	import { each } from "svelte/internal";
 
-	let bufeClosedStatus = $bufeClosed;
-
 	export let data;
+
 	let confirmShow = false;
 	let paymentMethod = "Készpénz";
  	let atveteliIdo = 'Válassz egy átvételi időt';
+	let nyitvatartasData;
 
+	if (localStorage.getItem('CartContent') != null) {
+	   	$cart = JSON.parse(localStorage.getItem('CartContent'));
+	   	$total = JSON.parse(localStorage.getItem('Total'));
+	}
+
+	async function fetchData() {
+    	const response = await fetch('/api/nyitvatartas');
+    	if (response.ok) {
+    	  	return await response.json();
+    	} else {
+    	  	return null;
+    	}
+  	}
+
+  	onMount(async () => {
+    	nyitvatartasData = await fetchData();
+		bufeClosed.set(nyitvatartasData.zarva)
+  	});
 
 	if (localStorage.getItem('CartContent') != null) {
 	   $cart = JSON.parse(localStorage.getItem('CartContent'));
@@ -35,40 +54,6 @@
 	   localStorage.clear();
 	   $cart = {};
 	   $total = { 'ar': 0, 'darab': 0, 'feltet': [] };
-	};
- 
-	function subtractAmount(termek) {
-	   if ($cart[termek].darab > 1) {
-		  let price = $cart[termek].ar / $cart[termek].darab;
- 
-		  $cart[termek].ar -= price;
-		  $cart[termek].darab--;
-		  recalculate();
-	   } else {
-		  delete $cart[termek];
-		  $cart = $cart; // Muszaj reactivity miatt
-		  recalculate();
-		  if (Object.keys($cart).length === 0) {
-			 localStorage.removeItem('CartContent');
-			 history.back()
-		  }
-	   }
-	};
- 
-	function addAmount(termek) {
-	   // * Elegge gusztustalan megoldas vegig loopolni es megtalalni a darabszamat a termeknek
-	   let darab;
-	   data.termekek.forEach(record => {
-		  if (record.termek == termek) darab = record.darab
-	   });
- 
-	   if ($cart[termek].darab < darab) {
-		  let price = $cart[termek].ar / $cart[termek].darab;
- 
-		  $cart[termek].ar += price;
-		  $cart[termek].darab++;
-		  recalculate();
-	   };
 	};
  
 	async function handleSubmit() {
@@ -138,8 +123,8 @@
 
 		<div class=" bg-gray-100 dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 mb-4">
 			{#each Object.keys($cart) as termek, i (i)}
-			<div href="#" class=" h-24 p-1 flex flex-row items-center justify-between bg-gray-100 dark:bg-slate-800">
-				<img class="object-cover h-full" src="favicon.png" alt="">
+			<div href="#" class=" h-24 p-2 flex flex-row items-center justify-between bg-gray-100 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 last:border-b-0">
+				<img class="object-cover rounded-lg h-16 w-16" src="/api/termekfoto/?termek={$cart[termek].id}" alt="">
 				<span class="text-xl">{termek}</span>
 				<div class="mr-2">
 					{#key $cart[termek].ar}
@@ -192,9 +177,9 @@
 			</div>
 
 			<div class="flex flex-col w-full justify-center items-center mt-4 mb-3">
-				{#if bufeClosedStatus = 0}
+				{#if !$bufeClosed}
 					<button class=" bg-cyan-500 text-white dark:bg-slate-600 p-2 rounded-xl w-10/12" on:click={() => confirmShow = true}>Rendelés leadása</button>
-				{:else if bufeClosedStatus = 1}
+				{:else}
 					<button disabled class=" bg-cyan-500 text-white dark:bg-slate-600 p-2 rounded-xl w-10/12 opacity-60">Rendelés leadása</button>
 					<p class="mt-2 text-red-500">Jelenleg a büfé zárva van</p>
 				{/if}
@@ -203,7 +188,7 @@
 		{/if}
 	</div>
 </main>
-<style>
+<style type="postcss">
 	.selectedpayment{
 		@apply bg-cyan-500 text-white border-none transition scale-105 ease-in-out;
 	}

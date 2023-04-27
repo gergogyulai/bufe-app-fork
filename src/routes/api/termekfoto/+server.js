@@ -17,7 +17,8 @@ export async function GET({ locals, fetch, url }) {
 
     return new Response(await foto.blob(), {
         headers: {
-            'Content-Type': 'image/*'
+            'Content-Type': 'image/*',
+            'Cache-Control': 'max-age=5000'
         }
     });
 }

@@ -93,7 +93,7 @@
         {#each Object.keys($cart) as termek, i (i)}
             <div class="flex flex-row items-start justify-start bg-gray-200 dark:bg-slate-800 rounded-xl drop-shadow-md text-center mb-4 outline outline-1 outline-slate-200 dark:outline-slate-700">
                 <div class="m-0.5">
-                <img class=" rounded-tl-xl rounded-bl-xl object-cover h-32" src="hamburger.jpg" alt="{termek}_kep">
+                <img class=" rounded-tl-xl rounded-bl-xl object-cover w-48 h-32" src="/api/termekfoto/?termek={$cart[termek].id}" alt="{termek}_kep">
             </div>
             <div class=" w-4/5 flex flex-col justify-center items-center p-2">
                 <a href="/{termek}">
