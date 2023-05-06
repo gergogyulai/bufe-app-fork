@@ -6,64 +6,125 @@
 	import { cart, total } from "$lib/stores/Cart.js";
 	import Topbar from '$lib/components/Topbar.svelte';
 	import { favs } from '$lib/stores/Favs.js'
+	import { enhance } from '$app/forms'
 
 
 	export let data;
 
 	const termek = data.termekek.termek;
-	const darab = data.termekek.darab
-	const description = data.termekek.leiras
-	const termekid = data.termekek.id
+	const maxAmount = data.termekek.darab;
+	const description = data.termekek.leiras;
+	const termekid = data.termekek.id;
+	const termekObject = {
+		[termek]:{
+			"id": termekid
+		}
+	};
 
-	console.log(termekid)
-	 
-	let tempcart = {[termek] : { 'ar': 0, 'darab': 0, 'id': termekid, 'feltet': [] }};
 
-	$: amount = 1;
-	$: price = data.termekek.ar * amount;
- 
-	if (localStorage.getItem('CartContent') != null) {
-	   $cart = JSON.parse(localStorage.getItem('CartContent'));
-	   tempcart = $cart;
-	   if (tempcart[termek] == undefined) {
-		  tempcart[termek] = { 'ar': 0, 'darab': 0, 'id': termekid, 'feltet': [] }
-	   }
+	let totalDarab = 0; // eddigi hozzaadott termekek + darab
+   	let darab = 1;
+   	$: price = data.termekek.ar * darab;
+   	let feltetek = [];
+
+	if (localStorage.getItem('CartContent')) {
+		$cart = JSON.parse(localStorage.getItem('CartContent'));
+		if ($cart[termek]) 
+			$cart[termek].forEach(x => {
+				totalDarab += x.darab;
+			});
 	}
- 
-	function addItem() {
-	   if (amount < darab - tempcart[termek].darab) {
-		  amount++
-	   }
-	};
-	
-	function subtractItem() {
-	   if (amount > 1) {
-		  amount--
-	   }
-	};
- 
-	function buy() {
-	   if (tempcart[termek].darab < darab) {
-			 $cart[termek] = {'ar': tempcart[termek].ar + price, 'darab': tempcart[termek].darab + amount, 'id': tempcart[termek].id ,'feltet': tempcart[termek].feltet}
- 
-			 $total = { 'ar': 0, 'darab': 0, 'feltet': [] }
-			 Object.keys($cart).forEach(termek => {
-				 $total.ar += $cart[termek].ar
-				 $total.darab += $cart[termek].darab
-			 });
- 
-		  localStorage.setItem('CartContent',JSON.stringify($cart));
-		  localStorage.setItem('Total',JSON.stringify($total));
- 
-		  goto("/list?Category=".concat($page.url.searchParams.get('Category')))
-	   } else {
-		  alert(`Túl sok ${termek} van már a kosárban!`)
-	   }
-	};
 
-	// function fav() {
+	function subtractAmount() {
+		if (darab > 1) {
+			darab--;
+			totalDarab--;
+		}
+	}
+
+	function addAmount() {
+		if (totalDarab+1 < maxAmount) {
+			darab++;
+			totalDarab++;
+		}
+	}
+
+	function feltetChange(feltet) {
+		if (feltetek.includes(feltet)) {
+			feltetek = feltetek.filter(item => item !== feltet);
+			price -= parseInt(data.termekek.feltetek[feltet].ar);
+		} else {
+			feltetek = [ ...feltetek, feltet ];
+			price += parseInt(data.termekek.feltetek[feltet].ar);
+		}
+		feltetek.sort();
+	}
+
+	function buy() {
+		if (totalDarab < maxAmount) {
+			let alreadyInCart = false;
+			if ($cart[termek]) {
+				$cart[termek].forEach((x, i) => {	// Ha már van egy ugyanilyen termék ugyanilyen feltétekkel akkor összevonja a kettő rendelést és növeli a darabszámát, árát
+					if (JSON.stringify(x.feltet) === JSON.stringify(feltetek)) {
+						$cart[termek][i].darab += darab;
+						$cart[termek][i].ar += price;
+						$cart[termek][i].id += termekid
+						alreadyInCart = true;
+					}
+				});
+			}
+			if (!alreadyInCart)	// Hozzáadja a terméket a kosárhoz ha nincs benne ugyanilyen feltétekkel rendelkező termék.
+				$cart[termek] = $cart[termek] ? [ ...$cart[termek], { 'ar': price, darab, 'feltet': feltetek, 'id': termekid } ] : [ { 'ar': price, darab, 'feltet': feltetek, 'id': termekid } ];
+	// 		 $cart[termek] = {'ar': tempcart[termek].ar + price, 'darab': tempcart[termek].darab + amount, 'id': tempcart[termek].id ,'feltet': tempcart[termek].feltet}
+
+			$total = { 'ar': 0, 'darab': 0 };	// Kosár total újraszámolása
+			Object.keys($cart).forEach(termek => {
+				$cart[termek].forEach(x => {
+					$total.ar += x.ar;
+					$total.darab += x.darab;
+				});
+			});
+
+			localStorage.setItem('CartContent',JSON.stringify($cart));
+			localStorage.setItem('Total',JSON.stringify($total));
+
+			goto('/list?Category='.concat($page.url.searchParams.get('Category')));
+		} else {
+			alert(`Túl sok ${termek} van már a kosárban!`);
+		}
+
+	}
+
+	// console.log(termekid)
+	 
+	// let tempcart = {[termek] : { 'ar': 0, 'darab': 0, 'id': termekid, 'feltet': [] }};
+
+	// $: amount = 1;
+	// $: price = data.termekek.ar * amount;
+ 
+	// if (localStorage.getItem('CartContent') != null) {
+	//    $cart = JSON.parse(localStorage.getItem('CartContent'));
+	//    tempcart = $cart;
+	//    if (tempcart[termek] == undefined) {
+	// 	  tempcart[termek] = { 'ar': 0, 'darab': 0, 'id': termekid, 'feltet': [] }
+	//    }
+	// }
+ 
+	// function addItem() {
+	//    if (amount < darab - tempcart[termek].darab) {
+	// 	  amount++
+	//    }
+	// };
+	
+	// function subtractItem() {
+	//    if (amount > 1) {
+	// 	  amount--
+	//    }
+	// };
+ 
+	// function buy() {
 	//    if (tempcart[termek].darab < darab) {
-	// 		 $cart[termek] = {'id': termek.id}
+	// 		 $cart[termek] = {'ar': tempcart[termek].ar + price, 'darab': tempcart[termek].darab + amount, 'id': tempcart[termek].id ,'feltet': tempcart[termek].feltet}
  
 	// 		 $total = { 'ar': 0, 'darab': 0, 'feltet': [] }
 	// 		 Object.keys($cart).forEach(termek => {
@@ -79,16 +140,25 @@
 	// 	  alert(`Túl sok ${termek} van már a kosárban!`)
 	//    }
 	// };
-	
-	function feltetChange(feltet,feltetAr,feltetDarab) {
-		 if (tempcart[termek].feltet.includes(feltet)) {
-			 tempcart[termek].feltet = tempcart[termek].feltet.filter(item => item != feltet)
-			 price -= Number(feltetAr)
-		 } else {
-			 tempcart[termek].feltet = [ ...tempcart[termek].feltet, feltet] 
-			 price += Number(feltetAr)
-		 }
-	 }
+
+	// // function fav() {
+	// //    if (tempcart[termek].darab < darab) {
+	// // 		 $cart[termek] = {'id': termek.id}
+ 
+	// // 		 $total = { 'ar': 0, 'darab': 0, 'feltet': [] }
+	// // 		 Object.keys($cart).forEach(termek => {
+	// // 			 $total.ar += $cart[termek].ar
+	// // 			 $total.darab += $cart[termek].darab
+	// // 		 });
+ 
+	// // 	  localStorage.setItem('CartContent',JSON.stringify($cart));
+	// // 	  localStorage.setItem('Total',JSON.stringify($total));
+ 
+	// // 	  goto("/list?Category=".concat($page.url.searchParams.get('Category')))
+	// //    } else {
+	// // 	  alert(`Túl sok ${termek} van már a kosárban!`)
+	// //    }
+	// // };	
 </script>
  
 <main class=" h-screen w-screen overflow-x-hidden overflow-auto bg-white dark:text-white dark:bg-slate-900 pb-32" in:fade={{duration: 180}}>
@@ -122,7 +192,7 @@
 				{#if darab !=0}
 					<h2>Elérhető: {darab} db</h2>
 				{:else}
-					<h2 class=" text-red-500">Elérhető: {darab} db</h2>
+					<h2 class=" text-red-500">Elérhető: {maxAmount} db</h2>
 				{/if}
 				
 				<span>{description}</span>
@@ -138,7 +208,7 @@
 							<label for="{feltet}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{feltet} +{data.termekek.feltetek[feltet].ar} Ft</label>
 						</div> -->
 						<label class="relative inline-flex items-center cursor-pointer m-2">
-							<input on:change={() => {feltetChange(feltet,data.termekek.feltetek[feltet].ar,data.termekek.feltetek[feltet].darab)}} type="checkbox" value="" class="sr-only peer">
+							<input on:change={() => {feltetChange(feltet);}} type="checkbox" value="" class="sr-only peer">
 							<div class="
 							w-11 h-6 bg-gray-300 focus:outline-none peer-focus:outline-none rounded-full peer
 							  dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white 
@@ -160,23 +230,17 @@
 							<h2 class="text-xl mb-2 p-2 rounded-full mt-2" in:fade="{{duration: 50}}">Ár: {price} Ft</h2>
 						{/key}
 						<div class="inline-flex bg-gray-300 dark:bg-slate-700 p-1 rounded-3xl">
-							<!-- minus button -->
-							<div class="mx-2 rounded-full">
-								<button on:click="{subtractItem}" class=" p-1 rounded-full dark:text-white text-cyan-500"><i class="fa-solid fa-minus"></i></button>
-							</div>
-							{#key amount}
-								<div in:fade="{{duration: 50}}" class="mx-1 text-center p-1 rounded-full">{amount}</div>
+							<div class="mx-2 rounded-full"><button on:click="{subtractAmount}" class=" p-1 rounded-full dark:text-white text-cyan-500"><i class="fa-solid fa-minus"></i></button></div>
+							{#key darab}
+								<div in:fade="{{duration: 50}}" class="mx-1 text-center p-1 rounded-full">{darab}</div>
 							{/key}
-							<!-- plus button -->
-							<div class="mx-2 rounded-full">
-								<button on:click="{addItem}" class=" p-1 rounded-full dark:text-white text-cyan-500"><i class="fa-solid fa-plus"></i></button>
-							</div>
+							<div class="mx-2 rounded-full"><button on:click="{addAmount}" class=" p-1 rounded-full dark:text-white text-cyan-500"><i class="fa-solid fa-plus"></i></button></div>
 						</div>
 					</div>
 					<div class=" flex w-full mt-2 justify-center">
 						<button on:click={buy} class=" bg-cyan-500 hover:bg-cyan-600 dark:hover:bg-slate-500 text-white dark:bg-slate-600 p-2 w-9/12 rounded-full text-center mr-2"><i class="fa-regular fa-cart-shopping"></i> Kosárhoz adás</button>
-						<form method="POST" action="?/logout">
-							<input hidden value="{$favs}" type="text">
+						<form use:enhance action="?/addFav" method="post">
+							<input hidden value="{JSON.stringify(termekObject)}" name="newFav" type="text">
 							<button class=" bg-cyan-500 hover:bg-cyan-600 dark:hover:bg-slate-500 text-white dark:bg-slate-600 p-2 w-12 rounded-full text-center"><i class="fa-solid fa-star"></i></button>
 						</form>
 					</div>
@@ -188,21 +252,13 @@
 							<h2 class="text-xl mb-2 p-2 rounded-full mt-2" in:fade="{{duration: 50}}">Ár: {price} Ft</h2>
 						{/key}
 						<div class="inline-flex bg-gray-300 dark:bg-slate-700 p-1 rounded-3xl">
-							<!-- plus button -->
-							<div class="mx-2 rounded-full">
-								<button on:click="{subtractItem}" class=" p-1 rounded-full dark:text-white text-cyan-500" disabled><i class="fa-solid fa-minus"></i></button>
-							</div>
-							{#key amount}
-								<div in:fade="{{duration: 50}}" class="mx-1 text-center p-1 rounded-full">{amount}</div>
-							{/key}
-							<!-- minus button -->
-							<div class="mx-2 rounded-full">
-								<button on:click="{addItem}" class=" p-1 rounded-full dark:text-white text-cyan-500" disabled><i class="fa-solid fa-plus"></i></button>
-							</div>
+							<div class="mx-2 rounded-full"><button class=" p-1 rounded-full dark:text-white text-cyan-500" disabled><i class="fa-solid fa-minus"></i></button></div>
+							<div in:fade="{{duration: 50}}" class="mx-1 text-center p-1 rounded-full">0</div>
+							<div class="mx-2 rounded-full"><button class=" p-1 rounded-full dark:text-white text-cyan-500" disabled><i class="fa-solid fa-plus"></i></button></div>
 						</div>
 					</div>
 					<div class=" flex w-full mt-2 justify-center">
-						<button on:click={buy} class=" bg-cyan-600 text-white dark:bg-slate-600 p-2 w-11/12 rounded-2xl text-center disabled:opacity-50" disabled><i class="fa-regular fa-cart-shopping"></i> Kosárhoz adás</button>
+						<button class=" bg-cyan-600 text-white dark:bg-slate-600 p-2 w-11/12 rounded-2xl text-center disabled:opacity-50"><i class="fa-regular fa-cart-shopping"></i> Kosárhoz adás</button>
 					</div>
 				</div>
 			{/if}

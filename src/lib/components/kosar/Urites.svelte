@@ -9,10 +9,10 @@
 	};
 	
 	function urites() {
-	    localStorage.clear();
-	    $cart = {};
-	    $total = { 'ar': 0, 'darab': 0, 'feltet': [] };
-	};
+		localStorage.removeItem('CartContent', 'Total');
+		$cart = {};
+		$total = { 'ar': 0, 'darab': 0 };
+	}
 </script>
 <div class=" flex w-full justify-center">
     <div class="urites">

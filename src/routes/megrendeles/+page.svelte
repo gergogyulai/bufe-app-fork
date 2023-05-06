@@ -14,48 +14,36 @@
 	let confirmShow = false;
 	let paymentMethod = "Készpénz";
  	let atveteliIdo = 'Válassz egy átvételi időt';
-	let nyitvatartasData;
+	
+	const nyitvatartas =  JSON.parse(data.nyitvatartasData, null, 2)
 
-	if (localStorage.getItem('CartContent') != null) {
-	   	$cart = JSON.parse(localStorage.getItem('CartContent'));
-	   	$total = JSON.parse(localStorage.getItem('Total'));
-	}
-
-	async function fetchData() {
-    	const response = await fetch('/api/nyitvatartas');
-    	if (response.ok) {
-    	  	return await response.json();
-    	} else {
-    	  	return null;
-    	}
-  	}
-
-  	onMount(async () => {
-    	nyitvatartasData = await fetchData();
-		bufeClosed.set(nyitvatartasData.zarva)
+	onMount(() => {
+		bufeClosed.set(nyitvatartas.zarva)
   	});
 
-	if (localStorage.getItem('CartContent') != null) {
-	   $cart = JSON.parse(localStorage.getItem('CartContent'));
-	   $total = JSON.parse(localStorage.getItem('Total'));
+	if (localStorage.getItem('CartContent')) {
+		$cart = JSON.parse(localStorage.getItem('CartContent'));
+		$total = JSON.parse(localStorage.getItem('Total'));
 	}
 
 	function recalculate() {
-	   $total = { 'ar': 0, 'darab': 0 };
-		 Object.keys($cart).forEach(termek => {
-			 $total.ar += $cart[termek].ar
-			 $total.darab += $cart[termek].darab
-		  localStorage.setItem('CartContent', JSON.stringify($cart));
-			 localStorage.setItem('Total', JSON.stringify($total))
-		 });
-	};
+		$total = { 'ar': 0, 'darab': 0 };
+		Object.keys($cart).forEach(termek => {
+			$cart[termek].forEach(x => {
+				$total.ar += x.ar;
+				$total.darab += x.darab;
+			});
+		});
+		localStorage.setItem('CartContent',JSON.stringify($cart));
+		localStorage.setItem('Total',JSON.stringify($total));
+	}
  
 	function urites() {
-	   localStorage.clear();
-	   $cart = {};
-	   $total = { 'ar': 0, 'darab': 0, 'feltet': [] };
+		localStorage.removeItem('CartContent', 'Total');
+	   	$cart = {};
+	   	$total = { 'ar': 0, 'darab': 0, 'feltet': [] };
 	};
- 
+
 	async function handleSubmit() {
 		if (atveteliIdo === ''){
 			alert("Nem adtál meg átvételi idot");
@@ -65,24 +53,24 @@
 			confirmShow = false;
 		};
 
-	   const data = new FormData(this);
-	   const response = await fetch(this.action, {
-		  method: 'POST',
-		  body: data
-	   });
- 
-	   const result = deserialize(await response.text());
- 
-	   if (result.type == 'success') {
-		  urites();
-		  goto('/rendelesek');
-	   } else {
-			 alert(result.data.error);
-			 delete $cart[result.data.sok];
-			 $cart = $cart; // kell reactivity miatt
-			 recalculate();
-		 };
-	};
+		const data = new FormData(this);
+		const response = await fetch(this.action, {
+			method: 'POST',
+			body: data
+		});
+
+		const result = deserialize(await response.text());
+
+		if (result.type === 'success') {
+			urites();
+			goto('/rendelesek');
+		} else {
+			alert(result.data.error);
+			delete $cart[result.data.sok];
+			$cart = $cart; // kell reactivity miatt
+			recalculate();
+		}
+	}
 </script>
 
 <main class="h-screen w-screen overflow-x-hidden overflow-auto text-neutral-900 bg-white dark:text-white dark:bg-slate-900">
@@ -122,20 +110,24 @@
 		<h2 class="text-center text-3xl m-5">Rendelésed tartalma</h2>
 
 		<div class=" bg-gray-100 dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 mb-4">
-			{#each Object.keys($cart) as termek, i (i)}
-			<div href="#" class=" h-24 p-2 flex flex-row items-center justify-between bg-gray-100 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 last:border-b-0">
-				<img class="object-cover rounded-lg h-16 w-16" src="/api/termekfoto/?termek={$cart[termek].id}" alt="">
-				<span class="text-xl">{termek}</span>
-				<div class="mr-2">
-					{#key $cart[termek].ar}
-						<div in:fade="{{duration: 50}}" class="text-center">{$cart[termek].darab} db</div>
-					{/key}
-					{#key termek.ar}
-						<h2 class="text-center text-lg font-bold" in:fade="{{duration: 200}}">{$cart[termek].ar} Ft</h2>
-					{/key}
+		{#each Object.keys($cart) as termek}
+			{#each $cart[termek] as x, i (i)}
+			<a href="/{termek}">
+				<div class=" h-24 p-2 flex flex-row items-center justify-between bg-gray-100 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 last:border-b-0">
+					<img class="object-cover rounded-lg h-16 w-16" src="/api/termekfoto/?termek={x.id}" alt="{termek.kep}">
+					<span class="text-xl">{termek}</span>
+					<div class="mr-2">
+						{#key x.darab}
+							<div in:fade="{{duration: 50}}" class="text-center">{x.darab} db</div>
+						{/key}
+						{#key x.ar}
+							<h2 class="text-center text-lg font-bold" in:fade="{{duration: 200}}">{x.ar} Ft</h2>
+						{/key}
+					</div>
 				</div>
-			</div>
+			</a>
 			{/each}
+		{/each}
 		</div>
 
 		{#if Object.keys($cart).length != 0}

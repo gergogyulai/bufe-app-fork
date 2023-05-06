@@ -42,16 +42,11 @@
 
 <svelte:head>
    <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" />
-   <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet">
-    {@html webManifest}
+   {@html webManifest}
 </svelte:head>
 
 <style lang="scss">
    :global(*) {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      text-decoration: none;
       font-family: 'Inter', sans-serif;
       -webkit-tap-highlight-color: transparent;
    }
