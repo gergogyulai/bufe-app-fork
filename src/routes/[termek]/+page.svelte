@@ -5,9 +5,7 @@
 	import { fade } from "svelte/transition";
 	import { cart, total } from "$lib/stores/Cart.js";
 	import Topbar from '$lib/components/Topbar.svelte';
-	import { favs } from '$lib/stores/Favs.js'
 	import { enhance } from '$app/forms'
-
 
 	export let data;
 
@@ -20,7 +18,6 @@
 			"id": termekid
 		}
 	};
-
 
 	let totalDarab = 0; // eddigi hozzaadott termekek + darab
    	let darab = 1;
@@ -75,7 +72,6 @@
 			}
 			if (!alreadyInCart)	// Hozzáadja a terméket a kosárhoz ha nincs benne ugyanilyen feltétekkel rendelkező termék.
 				$cart[termek] = $cart[termek] ? [ ...$cart[termek], { 'ar': price, darab, 'feltet': feltetek, 'id': termekid } ] : [ { 'ar': price, darab, 'feltet': feltetek, 'id': termekid } ];
-	// 		 $cart[termek] = {'ar': tempcart[termek].ar + price, 'darab': tempcart[termek].darab + amount, 'id': tempcart[termek].id ,'feltet': tempcart[termek].feltet}
 
 			$total = { 'ar': 0, 'darab': 0 };	// Kosár total újraszámolása
 			Object.keys($cart).forEach(termek => {
@@ -94,71 +90,6 @@
 		}
 
 	}
-
-	// console.log(termekid)
-	 
-	// let tempcart = {[termek] : { 'ar': 0, 'darab': 0, 'id': termekid, 'feltet': [] }};
-
-	// $: amount = 1;
-	// $: price = data.termekek.ar * amount;
- 
-	// if (localStorage.getItem('CartContent') != null) {
-	//    $cart = JSON.parse(localStorage.getItem('CartContent'));
-	//    tempcart = $cart;
-	//    if (tempcart[termek] == undefined) {
-	// 	  tempcart[termek] = { 'ar': 0, 'darab': 0, 'id': termekid, 'feltet': [] }
-	//    }
-	// }
- 
-	// function addItem() {
-	//    if (amount < darab - tempcart[termek].darab) {
-	// 	  amount++
-	//    }
-	// };
-	
-	// function subtractItem() {
-	//    if (amount > 1) {
-	// 	  amount--
-	//    }
-	// };
- 
-	// function buy() {
-	//    if (tempcart[termek].darab < darab) {
-	// 		 $cart[termek] = {'ar': tempcart[termek].ar + price, 'darab': tempcart[termek].darab + amount, 'id': tempcart[termek].id ,'feltet': tempcart[termek].feltet}
- 
-	// 		 $total = { 'ar': 0, 'darab': 0, 'feltet': [] }
-	// 		 Object.keys($cart).forEach(termek => {
-	// 			 $total.ar += $cart[termek].ar
-	// 			 $total.darab += $cart[termek].darab
-	// 		 });
- 
-	// 	  localStorage.setItem('CartContent',JSON.stringify($cart));
-	// 	  localStorage.setItem('Total',JSON.stringify($total));
- 
-	// 	  goto("/list?Category=".concat($page.url.searchParams.get('Category')))
-	//    } else {
-	// 	  alert(`Túl sok ${termek} van már a kosárban!`)
-	//    }
-	// };
-
-	// // function fav() {
-	// //    if (tempcart[termek].darab < darab) {
-	// // 		 $cart[termek] = {'id': termek.id}
- 
-	// // 		 $total = { 'ar': 0, 'darab': 0, 'feltet': [] }
-	// // 		 Object.keys($cart).forEach(termek => {
-	// // 			 $total.ar += $cart[termek].ar
-	// // 			 $total.darab += $cart[termek].darab
-	// // 		 });
- 
-	// // 	  localStorage.setItem('CartContent',JSON.stringify($cart));
-	// // 	  localStorage.setItem('Total',JSON.stringify($total));
- 
-	// // 	  goto("/list?Category=".concat($page.url.searchParams.get('Category')))
-	// //    } else {
-	// // 	  alert(`Túl sok ${termek} van már a kosárban!`)
-	// //    }
-	// // };	
 </script>
  
 <main class=" h-screen w-screen overflow-x-hidden overflow-auto bg-white dark:text-white dark:bg-slate-900 pb-32" in:fade={{duration: 180}}>
