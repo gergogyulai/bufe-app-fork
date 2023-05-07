@@ -1,5 +1,7 @@
 import { error, redirect } from "@sveltejs/kit";
 
+export const ssr = false;
+
 let currentUser
 
 export async function load({ locals }) {
