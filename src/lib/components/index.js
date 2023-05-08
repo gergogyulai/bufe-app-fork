@@ -3,7 +3,6 @@ import ZarasErtesito from './ZarasErtesito.svelte';
 import BottomButton from './BottomButton.svelte';
 import PageTransition from './PageTransition.svelte';
 import Tooltip from './Tooltip.svelte'
-import ThemeToggle from './ThemeToggle.svelte'
 // import ExpandableCard from './ExpandableCard.svelte'
 
 export { 
@@ -12,6 +11,5 @@ export {
     BottomButton,
     PageTransition,
     Tooltip,
-    ThemeToggle
     // ExpandableCard,
 };
