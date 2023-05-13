@@ -1,11 +1,12 @@
 <script>
    import { fly, fade } from 'svelte/transition';
+   import { enhance } from '$app/forms'
    import { register } from 'swiper/element/bundle';
    import { Toaster } from 'svelte-french-toast';
    import { onMount } from 'svelte';
    import { daysSince, formatDate } from '$lib/utils'
    import { Tooltip, Topbar } from '$lib/components'
-   import { Avatar, Favs, Password } from '$lib/components/profil';
+   import { Avatar, Password } from '$lib/components/profil';
 
    export let data;
    let avatarModal
@@ -107,7 +108,34 @@
             </swiper-slide>
             <swiper-slide>
                <div class="p-4 max-h-full overflow-y-auto drop-shadow-md">
-                  <Favs data={data}/>
+                  {#if Object.keys(data.currentUser.favs).length != 0}
+                     {#each Object.keys(data.currentUser.favs) as fav, i (i)}
+                     <div class="flex bg-neutral-200 text-neutral-800 dark:text-white dark:bg-slate-700 p-2 rounded-lg mb-2">
+                        <div class="basis-3/12">
+                           <img class="w-14 h-14 object-cover rounded-md" src="/api/termekfoto/?termek={data.currentUser.favs[fav].id}" alt="">
+                        </div>
+                        <div class="basis-8/12 flex items-center justify-center text-xl">
+                           <span><a href="/{fav}">{fav}</a></span>
+                        </div>
+                        <div class="flex items-center justify-end">
+                           <form
+                              method="post"
+                              action="?/removeFav"
+                              use:enhance
+                           >
+                              <input hidden type="text" name="removedFav" value="{fav}">
+                              <button class=" bg-cyan-500 hover:bg-red-500 hover:scale-105 transition-all ease-in-out dark:hover:bg-red-500 text-white dark:bg-slate-600 p-2 w-9 h-9 rounded-lg text-center">
+                                 <div class="flex justify-center items-center"><i class="fa-solid fa-star"></i></div>
+                              </button>
+                           </form>
+                        </div>
+                     </div>
+                     {/each}
+                  {:else}
+                     <div class="flex flex-col h-full justify-center items-center text-white">        
+                        <span class="text-2xl">Még nincs egy kedvenc terméked sem</span>
+                     </div>
+                  {/if}
                </div>
             </swiper-slide>
          </swiper-container>

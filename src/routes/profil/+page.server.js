@@ -1,31 +1,13 @@
-import { error, redirect } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
 
 export const ssr = false;
-
 let currentUser
 
 export async function load({ locals }) {
-	const record = await locals.pb.collection('users').getOne(locals.pb.authStore.baseModel.id);
-	currentUser = JSON.parse(JSON.stringify(record, 2));
-
-	const elozmenyLista = structuredClone(await locals.pb.collection('rendelesek').getFullList(1, {
-		filter: `rendelo = "${locals.pb.authStore.baseModel.id}"`,
-		sort: '-created'
-	}));
-
-	let total = 0;
-
-	Object.keys(elozmenyLista).forEach(rendeles => {
-		if (elozmenyLista[rendeles].status === 'kesz')
-			Object.keys(elozmenyLista[rendeles].termekek).forEach(termek => {
-				total += elozmenyLista[rendeles].termekek[termek].ar;
-			});
-	});
+	currentUser = structuredClone(await locals.pb.collection('users').getOne(locals.pb.authStore.baseModel.id));
 
 	return {
 		currentUser,
-		elozmenyLista,
-		total
 	};
 }
 
@@ -34,13 +16,8 @@ export const actions = {
 		locals.pb.authStore.clear();
 	},
 	changeAvatar: async ({ request, locals }) => {
-		try {
-			const data = await request.formData();
-			locals.pb.collection('users').update(locals.pb.authStore.baseModel.id, data);
-		} catch (error) {
-			console.log("Error", error)
-			throw error(error.status, error.message)
-		}
+		const data = await request.formData();
+		locals.pb.collection('users').update(locals.pb.authStore.baseModel.id, data);
 	},
 	resetAvatar: async ({ locals }) => {
 		const data = {"avatar": null}
@@ -48,7 +25,6 @@ export const actions = {
 	},
 	changePassword: async ({ request, locals }) => {
 		const formData = await request.formData();
-		console.log(formData)
 		try {
 			await locals.pb.collection('users').update(locals.pb.authStore.baseModel.id, formData);
 			locals.pb.authStore.clear();
@@ -58,15 +34,31 @@ export const actions = {
 			throw error(error.status, error.message);
 		}
 	},
+	addFav: async ({ request, locals }) => {
+		const data = await request.formData();
+		const newFavObj = JSON.parse(data.get('newFav'));
+		const keyToAdd = Object.keys(newFavObj)[0];
+
+		if (!keyToAdd) throw new Error("Invalid favorite data.");
+
+		const dbfavs = currentUser.favs || {};
+		if (dbfavs.hasOwnProperty(keyToAdd)) return; // mar van ilyen kedvenc
+
+		dbfavs[keyToAdd] = newFavObj[keyToAdd];
+		await locals.pb.collection('users').update(locals.pb.authStore.baseModel.id, { "favs": dbfavs });
+
+	},
 	removeFav: async ({ request, locals }) => {
-		let dbfavs = currentUser.favs;
 		const data = await request.formData();
 		const favToRemove = data.get('removedFav');
-		
-		if (favToRemove && dbfavs.hasOwnProperty(favToRemove)) {
-		  	delete dbfavs[favToRemove];
-		  	const updatedFavs = { "favs": dbfavs };
-		  	locals.pb.collection('users').update(locals.pb.authStore.baseModel.id, updatedFavs);
-		}
+
+		if (!favToRemove) throw new Error("Invalid favorite data.");
+
+		const dbfavs = currentUser.favs || {};
+		if (!dbfavs.hasOwnProperty(favToRemove)) return; // nem torolheto mivel nincs ilyen kedvenc 
+
+		delete dbfavs[favToRemove];
+		await locals.pb.collection('users').update(locals.pb.authStore.baseModel.id, { "favs": dbfavs });
+
 	}
 };
