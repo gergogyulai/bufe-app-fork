@@ -1,4 +1,4 @@
-import { PUSH_PRIVATE_KEY, PUSH_PUBLIC_KEY } from '$env/static/private';
+// import { PUSH_PRIVATE_KEY, PUSH_PUBLIC_KEY } from '$env/static/private';
 import { redirect } from '@sveltejs/kit';
 import webpush from 'web-push';
 import sharp from 'sharp';
@@ -11,7 +11,7 @@ process.on('uncaughtException', function (err) {
 
 export const ssr = false;
 
-webpush.setVapidDetails('mailto:szabot2@kkszki.hu', PUSH_PUBLIC_KEY, PUSH_PRIVATE_KEY);
+//webpush.setVapidDetails('mailto:szabot2@kkszki.hu', PUSH_PUBLIC_KEY, PUSH_PRIVATE_KEY);
 
 export async function load({ locals }) {
 	return {
